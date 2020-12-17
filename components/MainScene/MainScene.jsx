@@ -100,17 +100,19 @@ const Scene = () => {
 
     faceGroup.current.position.z = THREE.MathUtils.lerp(
       faceGroup.current.position.z,
-      faceGroup.current.position.z + Math.sin(clock.getElapsedTime()) * 4.5,
+      faceGroup.current.position.z + Math.sin(clock.getElapsedTime()) * 1.5,
       0.01
     )
 
-    mesh.current.material.uniforms.mouse.value = new THREE.Vector2(
-      mouse.x,
-      mouse.y
-    )
+    // mesh.current.material.uniforms.mouse.value = new THREE.Vector2(
+    //   mouse.x,
+    //   mouse.y
+    // )
   })
 
-  useEffect(() => void (spotLight.current.target = mesh.current), [scene])
+  // Spotlight follows the object.
+  // useEffect(() => void (spotLight.current.target = mesh.current), [scene])
+
   if (ENABLE_HELPERS) {
     useHelper(spotLight, THREE.SpotLightHelper, 'teal')
     useHelper(pointLight, THREE.PointLightHelper, 0.5, 'hotpink')
@@ -137,22 +139,25 @@ const Scene = () => {
         angle={0.5}
         distance={20}
       />
-      <group ref={faceGroup} position={[0, 0, -5]}>
+      <group ref={faceGroup} position={[0, 0, -3]}>
         <FaceMesh />
       </group>
       {/* Line geometry */}
-      <mesh ref={mesh} position={[0, 2, 0]} castShadow>
-        <planeGeometry attach="geometry" args={[2, 0.1, 100, 1]} />
-        {/* Shader Material Example */}
-        <defaultMaterial
-          attach="material"
-          side={THREE.DoubleSide}
-          // time={0}
-          texture1={texture}
-          // resolution={new THREE.Vector4()}
-          // uvRate1={new THREE.Vector2(1, 1)}
-        />
-      </mesh>
+      <group position={[0, -4, 0]}>
+        {new Array(60).fill(null).map((_, i) => (
+          <mesh key={`line-${i}`} position={[0, i * 0.15, 0]} castShadow>
+            <planeGeometry attach="geometry" args={[10, 0.1, 100, 1]} />
+            <defaultMaterial
+              attach="material"
+              side={THREE.DoubleSide}
+              // time={0}
+              texture1={texture}
+              // resolution={new THREE.Vector4()}
+              // uvRate1={new THREE.Vector2(1, 1)}
+            />
+          </mesh>
+        ))}
+      </group>
 
       <gridHelper args={[30, 30, 30]} />
     </>
