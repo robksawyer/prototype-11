@@ -100,7 +100,7 @@ const Scene = () => {
 
     faceGroup.current.position.z = THREE.MathUtils.lerp(
       faceGroup.current.position.z,
-      faceGroup.current.position.z + Math.sin(clock.getElapsedTime()) * 1.5,
+      faceGroup.current.position.z + Math.sin(clock.getElapsedTime()) * 0.15,
       0.01
     )
 
@@ -121,9 +121,11 @@ const Scene = () => {
     // useHelper(mesh, FaceNormalsHelper, 0.5, '#272740')
   }
 
+  const totalLines = 20
+
   return (
     <>
-      <pointLight position={[-10, 0, -20]} color="lightblue" intensity={2.5} />
+      <pointLight position={[-10, 0, -2]} color="lightblue" intensity={2.5} />
       <group ref={group}>
         <pointLight
           ref={pointLight}
@@ -139,14 +141,22 @@ const Scene = () => {
         angle={0.5}
         distance={20}
       />
-      <group ref={faceGroup} position={[0, 0, -3]}>
+      <group
+        ref={faceGroup}
+        position={[0, 0, -0.175]}
+        scale={[0.05, 0.05, 0.05]}
+      >
         <FaceMesh />
       </group>
       {/* Line geometry */}
-      <group position={[0, -4, 0]}>
-        {new Array(60).fill(null).map((_, i) => (
-          <mesh key={`line-${i}`} position={[0, i * 0.15, 0]} castShadow>
-            <planeGeometry attach="geometry" args={[10, 0.1, 100, 1]} />
+      <group position={[0, 0, 0]}>
+        {new Array(totalLines).fill(null).map((_, i) => (
+          <mesh
+            key={`line-${i}`}
+            position={[0, (i - totalLines / 2) / totalLines / 2, 0]}
+            castShadow
+          >
+            <planeGeometry attach="geometry" args={[5, 0.01, 100, 1]} />
             <defaultMaterial
               attach="material"
               side={THREE.DoubleSide}
