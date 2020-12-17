@@ -10,27 +10,45 @@
 uniform float time;
 uniform float progress;
 
-uniform sampler2D landscape; 
+uniform sampler2D texture1; 
 uniform vec4 resolution;
-uniform vec2  ;
+
 varying vec2 vUv;
-varying vec3 vPosition;
-varying vec3 vNormal;
 
 float PI = 3.14159265358979323846264338;
 
-void main() {
+// https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
+float sdSphere( vec3 p, float r )
+{
+  return length(p)-r;
+}
 
-    // @see https://community.khronos.org/t/getting-the-normal-with-dfdx-and-dfdy/70177
-    vec3 X = dFdx(vNormal);
-    vec3 Y = dFdy(vNormal);
-    vec3 normal = normalize(cross(X,Y));
+float sdf (vec3 p) {
+    return sdSphere(p, 0.4);
+}
 
-    float diffuse = dot(normal, vec3(1.));
-    vec4 t = texture2D(landscape, vUv);
-    // gl_FragColor = vec4(vUv, 0.0, 1.);
-    gl_FragColor = t;
-    gl_FragColor =  vec4(diffuse);
+void main() { 
+    vec2 newUV = (vUv - vec2(0.5)) * resolution.zw + vec2(0.5);
+    vec3 camPos = vec3(0., 0., 2.);
+    vec3 ray = normalize(vec3( (vUv - vec2(0.5) ) * resolution.zw, -1));
+
+    vec3 rayPos = camPos;
+    float t = 0.;
+    float tMax = 5.;
+    for(int i = 0; i < 256; ++i) {
+        vec3 pos = camPos + t * ray; // t is scalar value
+        float h = sdf(pos);
+        if (h < 0.0001 || t > tMax) break;
+        // the marching part
+        t += h;
+    }
+
+    vec3 color = vec3(0.);
+    if (t<tMax) {
+        color = vec3(1.);
+    }
+    
+    gl_FragColor = vec4(newUV, 0.0, 1.);
 }
 
 

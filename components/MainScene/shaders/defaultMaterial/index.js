@@ -32,7 +32,7 @@ const DefaultMaterial = shaderMaterial(
   {
     time: 0,
     resolution: new THREE.Vector4(),
-    landscape: null,
+    texture1: null,
     mouse: new THREE.Vector2(),
     // landscape: new THREE.TextureLoader(
     //   '/3d/textures/checkerboard.jpg',

@@ -32,6 +32,7 @@ import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHel
 
 import styles from './MainScene.module.css'
 
+import FaceMesh from './FaceMesh'
 import Loader from '../Loader'
 
 // Shader stack
@@ -79,6 +80,8 @@ const Scene = () => {
   const spotLight = useRef()
   const pointLight = useRef()
 
+  const faceGroup = useRef()
+
   // Texture loading example
   const texture = useTexture('/3d/textures/checkerboard.jpg')
   // const texture = useLoader(
@@ -88,12 +91,18 @@ const Scene = () => {
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping
 
   useFrame(({ clock, mouse }) => {
-    mesh.current.rotation.x = (Math.sin(clock.elapsedTime) * Math.PI) / 4
-    mesh.current.rotation.y = (Math.sin(clock.elapsedTime) * Math.PI) / 4
-    mesh.current.rotation.z = (Math.sin(clock.elapsedTime) * Math.PI) / 4
-    mesh.current.position.x = Math.sin(clock.elapsedTime)
-    mesh.current.position.z = Math.sin(clock.elapsedTime)
-    group.current.rotation.y += 0.02
+    // mesh.current.rotation.x = (Math.sin(clock.elapsedTime) * Math.PI) / 4
+    // mesh.current.rotation.y = (Math.sin(clock.elapsedTime) * Math.PI) / 4
+    // mesh.current.rotation.z = (Math.sin(clock.elapsedTime) * Math.PI) / 4
+    // mesh.current.position.x = Math.sin(clock.elapsedTime)
+    // mesh.current.position.z = Math.sin(clock.elapsedTime)
+    // group.current.rotation.y += 0.02
+
+    faceGroup.current.position.z = THREE.MathUtils.lerp(
+      faceGroup.current.position.z,
+      faceGroup.current.position.z + Math.sin(clock.getElapsedTime()) * 4.5,
+      0.01
+    )
 
     mesh.current.material.uniforms.mouse.value = new THREE.Vector2(
       mouse.x,
@@ -128,34 +137,23 @@ const Scene = () => {
         angle={0.5}
         distance={20}
       />
+      <group ref={faceGroup} position={[0, 0, -5]}>
+        <FaceMesh />
+      </group>
+      {/* Line geometry */}
       <mesh ref={mesh} position={[0, 2, 0]} castShadow>
-        <icosahedronGeometry attach="geometry" args={[1, 1]} />
+        <planeGeometry attach="geometry" args={[2, 0.1, 100, 1]} />
         {/* Shader Material Example */}
         <defaultMaterial
           attach="material"
           side={THREE.DoubleSide}
           // time={0}
-          // texture={new THREE.TextureLoader().load(
-          //   '/3d/textures/checkerboard.jpg',
-          //   (texture) => {
-          //     texture.wrapS = texture.wrapT = THREE.RepeatWrapping
-          //   }
-          // )}
-          landscape={texture}
+          texture1={texture}
           // resolution={new THREE.Vector4()}
           // uvRate1={new THREE.Vector2(1, 1)}
         />
-
-        {/* Standard Color Material Example */}
-        {/* <meshStandardMaterial attach="material" color="lightblue" /> */}
-
-        {/* Texture Material Example */}
-        {/* <meshBasicMaterial attach="material" map={texture} /> */}
       </mesh>
-      <mesh rotation-x={-Math.PI / 2} receiveShadow>
-        <planeBufferGeometry args={[100, 100]} attach="geometry" />
-        <shadowMaterial attach="material" opacity={0.5} />
-      </mesh>
+
       <gridHelper args={[30, 30, 30]} />
     </>
   )
