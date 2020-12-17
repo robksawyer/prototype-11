@@ -143,8 +143,8 @@ const Scene = () => {
       />
       <group
         ref={faceGroup}
-        position={[0, 0, -0.175]}
-        scale={[0.05, 0.05, 0.05]}
+        position={[0, -0.05, -0.175]}
+        scale={[0.045, 0.045, 0.045]}
       >
         <FaceMesh />
       </group>
@@ -156,7 +156,7 @@ const Scene = () => {
             position={[0, (i - totalLines / 2) / totalLines / 2, 0]}
             castShadow
           >
-            <planeGeometry attach="geometry" args={[5, 0.01, 100, 1]} />
+            <planeGeometry attach="geometry" args={[1, 0.01, 100, 1]} />
             <defaultMaterial
               attach="material"
               side={THREE.DoubleSide}
