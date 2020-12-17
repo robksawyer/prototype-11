@@ -39,7 +39,7 @@ import FaceMesh from './FaceMesh'
 import Loader from '../Loader'
 
 // Shader stack
-import './shaders/defaultShaderMaterial'
+import '../../public/3d/shaders/basicShaderMaterial'
 
 // Texture loading examples
 // const envMap = useCubeTexture(
@@ -192,7 +192,7 @@ const Everything = () => {
 
       <mesh ref={mesh} position={[0, 0, 0]}>
         <planeGeometry attach="geometry" args={[1, 1, 100, 1]} />
-        <defaultShaderMaterial
+        <basicShaderMaterial
           attach="material"
           side={THREE.DoubleSide}
           depth={null}
@@ -211,7 +211,7 @@ const Everything = () => {
             castShadow
           >
             <planeGeometry attach="geometry" args={[1, 0.01, 100, 1]} />
-            <defaultShaderMaterial
+            <basicShaderMaterial
               attach="material"
               side={THREE.DoubleSide}
               depth={null}

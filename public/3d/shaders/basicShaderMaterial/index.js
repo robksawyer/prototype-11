@@ -1,18 +1,18 @@
 /**
- * @file shaders/defaultMaterial/index.js
+ * @file shaders/basicShaderMaterial/index.js
  * Basic shader setup and material example.
  *
  * Usage:
  *
  *    import { extend } from 'react-three-fiber
- *    import { DefaultMaterial } from './shaders/defaultMaterial'
+ *    import { BasicShaderMaterial } from './shaders/BasicShaderMaterial'
  *
- *    extend({ DefaultMaterial })
+ *    extend({ BasicShaderMaterial })
  *
  *    ... later in the React component
  *    <mesh>
  *      ...
- *      <defaultMaterial time={0} ... />
+ *      <basicShaderMaterial time={0} ... />
  *    </mesh>
  *
  */
@@ -22,13 +22,12 @@ import { shaderMaterial } from '@react-three/drei'
 
 import vertex from './default.vert'
 import fragment from './default.frag'
-import { Vector2 } from 'three'
 
 /**
- * DefaultMaterial
+ * BasicShaderMaterial
  * @param {*} uniforms
  */
-const DefaultMaterial = shaderMaterial(
+const BasicShaderMaterial = shaderMaterial(
   {
     defines: {
       '#extension GL_OES_standard_derivatives': 'enable',
@@ -65,4 +64,4 @@ const DefaultMaterial = shaderMaterial(
   }
 )
 
-extend({ DefaultMaterial })
+extend({ BasicShaderMaterial })
