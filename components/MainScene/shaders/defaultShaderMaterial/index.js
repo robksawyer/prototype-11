@@ -30,9 +30,13 @@ import { Vector2 } from 'three'
  */
 const DefaultMaterial = shaderMaterial(
   {
+    defines: {
+      '#extension GL_OES_standard_derivatives': 'enable',
+    },
     time: 0,
     resolution: new THREE.Vector4(),
     texture1: null,
+    depthInfo: null,
     mouse: new THREE.Vector2(),
     // landscape: new THREE.TextureLoader(
     //   '/3d/textures/checkerboard.jpg',
@@ -47,7 +51,6 @@ const DefaultMaterial = shaderMaterial(
   // fragment shader
   fragment,
   (material) => {
-    console.log('material', material)
     material.side = THREE.DoubleSide
     // material.wireframe = false
     // material.vertexColors = true

@@ -1,20 +1,16 @@
 /**
  * @file MainScene.js
+ *
+ * @references
+ *    WebGLRenderTarget / https://codesandbox.io/s/r3f-render-target-qgcrx
  */
-import React, { Suspense, useRef, useEffect } from 'react'
+import React, { Suspense, useRef, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import useErrorBoundary from 'use-error-boundary'
 
 // import { useTweaks } from 'use-tweaks'
 // import { useInView } from 'react-intersection-observer'
 // import useMobileDetect from 'use-mobile-detect-hook'
-import {
-  extend,
-  Canvas,
-  useFrame,
-  useThree,
-  useLoader,
-} from 'react-three-fiber'
 
 // Enabled for effects
 // import {
@@ -24,7 +20,14 @@ import {
 // } from '@react-three/postprocessing'
 
 import * as THREE from 'three'
-import { useHelper, Html, useTexture, OrbitControls } from '@react-three/drei'
+import { Canvas, useFrame, createPortal } from 'react-three-fiber'
+import {
+  useHelper,
+  Html,
+  useTexture,
+  OrbitControls,
+  PerspectiveCamera,
+} from '@react-three/drei'
 // import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper'
 // import { FaceNormalsHelper } from 'three/examples/jsm/helpers/FaceNormalsHelper'
@@ -36,7 +39,7 @@ import FaceMesh from './FaceMesh'
 import Loader from '../Loader'
 
 // Shader stack
-import './shaders/defaultMaterial'
+import './shaders/defaultShaderMaterial'
 
 // Texture loading examples
 // const envMap = useCubeTexture(
@@ -72,10 +75,10 @@ import './shaders/defaultMaterial'
 
 const ENABLE_HELPERS = 0
 
-const Scene = () => {
+const Everything = () => {
   const mesh = useRef()
-  const { scene } = useThree()
   const group = useRef()
+  const cam = useRef()
 
   const spotLight = useRef()
   const pointLight = useRef()
@@ -123,8 +126,43 @@ const Scene = () => {
 
   const totalLines = 20
 
+  const [scene, target] = useMemo(() => {
+    const scene = new THREE.Scene()
+    scene.background = new THREE.Color('black')
+    const target = new THREE.WebGLRenderTarget(
+      window.innerWidth,
+      window.innerHeight
+    )
+    target.texture.format = THREE.RGBFormat
+    target.texture.minFilter = THREE.NearestFilter
+    target.texture.magFilter = THREE.NearestFilter
+    target.texture.generateMipmaps = false
+    target.stencilBuffer = false
+    target.depthBuffer = true
+    target.depthTexture = new THREE.DepthTexture()
+    target.depthTexture.format = THREE.UnsignedShortType
+    target.depthTexture.type = THREE.DepthFormat
+    return [scene, target]
+  }, [])
+
+  console.log('target', target)
+
+  // useFrame(({ gl, camera }) => {
+  //   gl.setRenderTarget(target)
+  //   // gl.render(scene, cam.current)
+  //   gl.render(scene, camera)
+
+  //   console.log('mesh.current.material', mesh.current.material)
+  //   mesh.current.material.uniforms.depthInfo = target.texture
+
+  //   gl.setRenderTarget(null)
+
+  //   // gl.render(scene, camera)
+  // })
+
   return (
     <>
+      <PerspectiveCamera ref={cam} position={[0, 0, 5]} zoom={1} />
       <pointLight position={[-10, 0, -2]} color="lightblue" intensity={2.5} />
       <group ref={group}>
         <pointLight
@@ -141,15 +179,31 @@ const Scene = () => {
         angle={0.5}
         distance={20}
       />
-      <group
-        ref={faceGroup}
-        position={[0, -0.05, -0.175]}
-        scale={[0.045, 0.045, 0.045]}
-      >
-        <FaceMesh />
-      </group>
+      {createPortal(
+        <group
+          ref={faceGroup}
+          position={[0, -0.05, -0.175]}
+          scale={[0.045, 0.045, 0.045]}
+        >
+          <FaceMesh />
+        </group>,
+        scene
+      )}
+
+      <mesh ref={mesh} position={[0, 0, 0]}>
+        <planeGeometry attach="geometry" args={[1, 1, 100, 1]} />
+        <defaultShaderMaterial
+          attach="material"
+          side={THREE.DoubleSide}
+          depth={null}
+          // time={0}
+          // resolution={new THREE.Vector4()}
+          // uvRate1={new THREE.Vector2(1, 1)}
+        />
+      </mesh>
+
       {/* Line geometry */}
-      <group position={[0, 0, 0]}>
+      {/* <group position={[0, 0, 0]}>
         {new Array(totalLines).fill(null).map((_, i) => (
           <mesh
             key={`line-${i}`}
@@ -157,9 +211,10 @@ const Scene = () => {
             castShadow
           >
             <planeGeometry attach="geometry" args={[1, 0.01, 100, 1]} />
-            <defaultMaterial
+            <defaultShaderMaterial
               attach="material"
               side={THREE.DoubleSide}
+              depth={null}
               // time={0}
               texture1={texture}
               // resolution={new THREE.Vector4()}
@@ -167,7 +222,7 @@ const Scene = () => {
             />
           </mesh>
         ))}
-      </group>
+      </group> */}
 
       <gridHelper args={[30, 30, 30]} />
     </>
@@ -209,7 +264,7 @@ const MainScene = (props) => {
             </Html>
           }
         >
-          <Scene />
+          <Everything />
         </Suspense>
 
         {/* <Effects /> */}
