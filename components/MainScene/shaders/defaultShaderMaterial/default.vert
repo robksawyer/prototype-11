@@ -36,7 +36,7 @@ float PI = 3.14159265358979323846264338;
 
 void main() {
     vUv = uv;
-    // vNormal = normalize(normalMatrix * normal);
+    vNormal = normalize(normalMatrix * normal);
     //  calculate the position of a vertex in the vertex shader
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }

@@ -1,20 +1,31 @@
 /**
- * @file shaders/basicShaderMaterial/index.js
+ * @file shaders/DefaultShaderMaterial/index.js
  * Basic shader setup and material example.
  *
  * Usage:
  *
  *    import { extend } from 'react-three-fiber
- *    import { BasicShaderMaterial } from './shaders/BasicShaderMaterial'
- *
- *    extend({ BasicShaderMaterial })
+ *    import { DefaultShaderMaterial } from './shaders/DefaultShaderMaterial'
  *
  *    ... later in the React component
  *    <mesh>
  *      ...
- *      <basicShaderMaterial time={0} ... />
+ *      <defaultShaderMaterial time={0} ... />
  *    </mesh>
  *
+ */
+
+/**
+ * The idea is as follows:
+ * - Render the main scene to a WebGLRenderTarget. This target will contain RGB and Depth data that
+ *   can be accessed via their .texture and .depthTexture attributes, accordingly.
+ *
+ * - Take these 2 textures, and apply them to a plane with custom shaders.
+ *
+ * - In the plane's custom shaders, you can access the texture data to perform whatever calculations
+ *   you want to play with colors and depth.
+ *
+ * - Render the second scene (that contains only the plane) to canvas.
  */
 import * as THREE from 'three'
 import { extend } from 'react-three-fiber'
@@ -24,20 +35,21 @@ import vertex from './default.vert'
 import fragment from './default.frag'
 
 /**
- * BasicShaderMaterial
+ * DefaultShaderMaterial
  * @param {*} uniforms
  */
-const BasicShaderMaterial = shaderMaterial(
+const DefaultShaderMaterial = shaderMaterial(
   {
-    defines: {
-      '#extension GL_OES_standard_derivatives': 'enable',
-    },
+    // NOTE: This throws an error.
+    // defines: {
+    //   '#extension GL_OES_standard_derivatives': 'enable',
+    // },
     time: 0,
     resolution: new THREE.Vector4(),
     texture1: null,
     depthInfo: null,
     mouse: new THREE.Vector2(),
-    // landscape: new THREE.TextureLoader(
+    // texture1: new THREE.TextureLoader(
     //   '/3d/textures/checkerboard.jpg',
     //   (texture) => {
     //     console.log('texture', texture)
@@ -64,4 +76,4 @@ const BasicShaderMaterial = shaderMaterial(
   }
 )
 
-extend({ BasicShaderMaterial })
+extend({ DefaultShaderMaterial })
