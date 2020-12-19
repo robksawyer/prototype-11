@@ -269,7 +269,6 @@ const Everything = () => {
 
   return (
     <>
-      <gridHelper args={[30, 30, 30]} />
       {/* <perspectiveCamera
         ref={cam}
         aspect={size.width / size.height}
@@ -282,9 +281,9 @@ const Everything = () => {
       /> */}
       <group>
         {/* Main scene containing depth information. */}
-        {/* <FaceContent depthBuffer={depthBuffer} depthMaterial={depthMaterial} /> */}
+        <FaceContent depthBuffer={depthBuffer} depthMaterial={depthMaterial} />
         {/* Scene using the depth information */}
-        {/* <Content depthBuffer={depthBuffer} depthMaterial={depthMaterial} /> */}
+        <Content depthBuffer={depthBuffer} depthMaterial={depthMaterial} />
       </group>
 
       <pointLight position={[-1, 0, 1]} color="lightblue" intensity={2.5} />
@@ -303,6 +302,7 @@ const Everything = () => {
         angle={0.5}
         distance={20}
       />
+      <gridHelper args={[30, 30, 30]} />
     </>
   )
 }
