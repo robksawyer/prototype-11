@@ -66,6 +66,9 @@ const DefaultShaderMaterial = shaderMaterial(
     // material.wireframe = false
     // material.vertexColors = true
     // material.flatShading = true
+    material.needsUpdate = true
+    material.minFilter = THREE.LinearMipMapLinearFilter
+    material.magFilter = THREE.LinearMipMapLinearFilter
 
     // material.defines = {
     //   '#extension GL_OES_standard_derivatives': 'enable',

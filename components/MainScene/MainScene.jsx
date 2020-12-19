@@ -8,6 +8,8 @@ import React, { Suspense, useRef, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import useErrorBoundary from 'use-error-boundary'
 
+import { useFBO } from '../../hooks/useFBO'
+
 // import { useTweaks } from 'use-tweaks'
 // import { useInView } from 'react-intersection-observer'
 // import useMobileDetect from 'use-mobile-detect-hook'
@@ -76,15 +78,34 @@ import './shaders/defaultShaderMaterial'
 
 const ENABLE_HELPERS = 0
 
-const FaceContent = ({ target }) => {
+const FaceContent = ({ depthBuffer, depthMaterial }) => {
   const scene = useRef()
-  const cam = useRef()
   const faceGroup = useRef()
   const { size, camera: defaultCamera, setDefaultCamera } = useThree()
 
+  // // Create a render target with depth texture
+  // const [target] = useMemo(() => {
+  //   // Generate a render target
+  //   const target = new THREE.WebGLRenderTarget(size.width, size.height)
+  //   target.texture.format = THREE.RGBFormat
+  //   target.texture.minFilter = THREE.NearestFilter
+  //   target.texture.magFilter = THREE.NearestFilter
+  //   target.texture.generateMipmaps = false
+  //   target.stencilBuffer = false
+  //   target.depthBuffer = true
+  //   target.depthTexture = new THREE.DepthTexture()
+  //   target.depthTexture.format = THREE.DepthFormat
+  //   target.depthTexture.type = THREE.UnsignedShortType
+
+  //   return [target]
+  // }, [])
+
+  // depthBuffer.depthTexture.format = THREE.DepthFormat
+  // depthBuffer.depthTexture.type = THREE.UnsignedShortType
+
   // useEffect(() => void setDefaultCamera(cam.current), [])
 
-  useFrame(({ gl, clock, mouse }) => {
+  useFrame(({ gl, clock, mouse, camera, scene }) => {
     // cam.current.updateMatri
     // gl.autoClear = true
 
@@ -94,23 +115,15 @@ const FaceContent = ({ target }) => {
       0.01
     )
 
-    // render scene into target
-    gl.setRenderTarget(target)
-    // gl.render(scene.current, cam.current)
-  }, 100)
+    // render scene into depthBuffer
+    scene.overrideMaterial = depthMaterial
+    gl.setRenderTarget(depthBuffer)
+
+    gl.render(scene, camera)
+  }, -1)
 
   return (
     <scene ref={scene}>
-      <perspectiveCamera
-        ref={cam}
-        aspect={size.width / size.height}
-        position={[-2, 2, 2]}
-        fov={70}
-        radius={(size.width + size.height) / 4}
-        near={0.01}
-        far={5}
-        onUpdate={(self) => self.updateProjectionMatrix()}
-      />
       <group
         ref={faceGroup}
         position={[0, -0.05, -0.175]}
@@ -133,9 +146,8 @@ const FaceContent = ({ target }) => {
   )
 }
 
-const Content = ({ target }) => {
+const Content = ({ depthBuffer, depthMaterial }) => {
   const mesh = useRef()
-  const scene = useRef()
 
   const { camera } = useThree()
 
@@ -148,18 +160,30 @@ const Content = ({ target }) => {
   }
 
   useFrame(({ gl, scene, camera }) => {
-    // gl.autoClear = true
-    // render post FX
-    mesh.current.material.uniforms.depthInfo.value = target.texture
-    // console.log('mesh.current.material', mesh.current.material)
-    // mesh.current.material.uniforms.tDiffuse.value = target.texture
+    gl.autoClear = true
 
+    scene.overrideMaterial = depthMaterial
+    gl.setRenderTarget(depthBuffer)
+
+    // render post FX
+    // mesh.current.material.uniforms.depthInfo.value = depthBuffer.texture
+
+    // console.log('mesh.current.material', mesh.current.material)
+    // mesh.current.material.uniforms.tDiffuse.value = depthBuffer.texture
+
+    // Clear the render target and the overrided scene material
     gl.setRenderTarget(null)
-    // gl.render(scene.current, camera)
+    scene.overrideMaterial = null
+
+    gl.render(scene, camera)
+
+    gl.autoClear = false
+
+    gl.clearDepth()
   }, 10)
 
   return (
-    <scene ref={scene}>
+    <>
       <mesh ref={mesh} position={[0, 0, 0]}>
         <planeGeometry attach="geometry" args={[1, 1, 100, 1]} />
         <defaultShaderMaterial
@@ -168,7 +192,9 @@ const Content = ({ target }) => {
           cameraNear={camera.near}
           cameraFar={camera.far}
           time={0}
-          depthInfo={target.texture}
+          depthInfo={depthBuffer.texture}
+          transparent
+          depthWrite={false}
           // resolution={new THREE.Vector4()}
           // uvRate1={new THREE.Vector2(1, 1)}
         />
@@ -194,7 +220,7 @@ const Content = ({ target }) => {
           </mesh>
         ))}
       </group> */}
-    </scene>
+    </>
   )
 }
 
@@ -203,27 +229,6 @@ const Everything = () => {
 
   const spotLight = useRef()
   const pointLight = useRef()
-
-  const { size } = useThree()
-
-  // Create a render target with depth texture
-  const [target] = useMemo(() => {
-    // Generate a render target
-    const target = new THREE.WebGLRenderTarget(size.width, size.height)
-    target.texture.format = THREE.RGBFormat
-    target.texture.minFilter = THREE.NearestFilter
-    target.texture.magFilter = THREE.NearestFilter
-    target.texture.generateMipmaps = false
-    target.stencilBuffer = false
-    target.depthBuffer = true
-    target.depthTexture = new THREE.DepthTexture()
-    target.depthTexture.format = THREE.DepthFormat
-    target.depthTexture.type = THREE.UnsignedShortType
-
-    return [target]
-  }, [])
-
-  console.log('target', target)
 
   // Texture loading example
   // const texture = useTexture('/3d/textures/checkerboard.jpg')
@@ -241,8 +246,47 @@ const Everything = () => {
     useHelper(pointLight, THREE.PointLightHelper, 0.5, 'hotpink')
   }
 
+  const depthMaterial = new THREE.MeshDepthMaterial({
+    depthPacking: THREE.BasicDepthPacking,
+  })
+
+  console.log('depthMaterial', depthMaterial)
+
+  const depthBuffer = useFBO({
+    settings: {
+      format: THREE.RGBFormat,
+      // minFilter: THREE.NearestFilter,
+      // magFilter: THREE.NearestFilter,
+      // generateMipmaps: false,
+      stencilBuffer: false,
+      depthBuffer: true,
+      // type: THREE.UnsignedShortType,
+      // depthTexture: new THREE.DepthTexture(),
+    },
+  })
+
+  console.log('depthBuffer', depthBuffer)
+
   return (
     <>
+      <gridHelper args={[30, 30, 30]} />
+      {/* <perspectiveCamera
+        ref={cam}
+        aspect={size.width / size.height}
+        position={[-2, 2, 2]}
+        fov={70}
+        radius={(size.width + size.height) / 4}
+        near={0.01}
+        far={5}
+        onUpdate={(self) => self.updateProjectionMatrix()}
+      /> */}
+      <group>
+        {/* Main scene containing depth information. */}
+        {/* <FaceContent depthBuffer={depthBuffer} depthMaterial={depthMaterial} /> */}
+        {/* Scene using the depth information */}
+        {/* <Content depthBuffer={depthBuffer} depthMaterial={depthMaterial} /> */}
+      </group>
+
       <pointLight position={[-1, 0, 1]} color="lightblue" intensity={2.5} />
       <group ref={group}>
         <pointLight
@@ -259,11 +303,6 @@ const Everything = () => {
         angle={0.5}
         distance={20}
       />
-      {/* Main scene containing depth information. */}
-      <FaceContent target={target} />
-      {/* Scene using the depth information */}
-      <Content target={target} />
-      <gridHelper args={[30, 30, 30]} />
     </>
   )
 }

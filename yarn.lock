@@ -5247,6 +5247,15 @@ object.values@^1.1.1:
     function-bind "^1.1.1"
     has "^1.0.3"
 
+ombra@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/ombra/-/ombra-0.1.5.tgz#e0ae79d8ed9d93dd0666a232411db9a5e8b0faa0"
+  integrity sha512-julQdleXGNpegNhWmWreGkdMxRdrZDz8mnJiigewnEYL0Eb4RU1901Y89pEWMe+qmJWEtjHL+b9SBnpUQE8rMg==
+  dependencies:
+    "@react-three/drei" "^2.2.7"
+    react-three-fiber "^5.3.3"
+    three "^0.123.0"
+
 once@^1.3.0, once@^1.3.1, once@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/once/-/once-1.4.0.tgz#583b1aa775961d4b113ac17d9c50baef9dd76bd1"
@@ -6281,7 +6290,7 @@ react-spring@^8.0.27:
     "@babel/runtime" "^7.3.1"
     prop-types "^15.5.8"
 
-react-three-fiber@^5.3.10:
+react-three-fiber@^5.3.10, react-three-fiber@^5.3.3:
   version "5.3.10"
   resolved "https://registry.yarnpkg.com/react-three-fiber/-/react-three-fiber-5.3.10.tgz#3c4786280ab69111ef5e0b7b49bdf154d6936e22"
   integrity sha512-qC9h5XfnEK5QX3AX7VAt8QjlA1RmvI8ZkY/dwVcTDHh211ied5hW0iq2Fo1GjU9pwo4SWZ3P8RINew6as1BMCg==
