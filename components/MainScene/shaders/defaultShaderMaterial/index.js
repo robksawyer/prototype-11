@@ -45,10 +45,12 @@ const DefaultShaderMaterial = shaderMaterial(
     //   '#extension GL_OES_standard_derivatives': 'enable',
     // },
     time: 0,
-    resolution: new THREE.Vector4(),
     texture1: null,
     depthInfo: null,
+    cameraNear: 1.0,
+    cameraFar: 2000.0,
     mouse: new THREE.Vector2(),
+    resolution: new THREE.Vector4(),
     // texture1: new THREE.TextureLoader(
     //   '/3d/textures/checkerboard.jpg',
     //   (texture) => {
@@ -62,13 +64,14 @@ const DefaultShaderMaterial = shaderMaterial(
   // fragment shader
   fragment,
   (material) => {
+    console.log('material', material)
     material.side = THREE.DoubleSide
     // material.wireframe = false
     // material.vertexColors = true
     // material.flatShading = true
-    material.needsUpdate = true
-    material.minFilter = THREE.LinearMipMapLinearFilter
-    material.magFilter = THREE.LinearMipMapLinearFilter
+    // material.needsUpdate = true
+    // material.minFilter = THREE.LinearMipMapLinearFilter
+    // material.magFilter = THREE.LinearMipMapLinearFilter
 
     // material.defines = {
     //   '#extension GL_OES_standard_derivatives': 'enable',

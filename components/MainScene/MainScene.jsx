@@ -43,6 +43,7 @@ import Loader from '../Loader'
 
 // Shader stack
 import './shaders/defaultShaderMaterial'
+import { MeshNormalMaterial } from 'three'
 
 // Texture loading examples
 // const envMap = useCubeTexture(
@@ -106,7 +107,7 @@ const FaceContent = ({ depthBuffer, depthMaterial }) => {
   // useEffect(() => void setDefaultCamera(cam.current), [])
 
   useFrame(({ gl, clock, mouse, camera, scene }) => {
-    // cam.current.updateMatri
+    // cam.current.updateMatrix
     // gl.autoClear = true
 
     faceGroup.current.position.z = THREE.MathUtils.lerp(
@@ -116,20 +117,20 @@ const FaceContent = ({ depthBuffer, depthMaterial }) => {
     )
 
     // render scene into depthBuffer
-    scene.overrideMaterial = depthMaterial
-    gl.setRenderTarget(depthBuffer)
+    // scene.overrideMaterial = depthMaterial
+    // gl.setRenderTarget(depthBuffer)
 
-    gl.render(scene, camera)
-  }, -1)
+    // gl.render(scene, camera)
+  }, 100)
 
   return (
     <scene ref={scene}>
       <group
         ref={faceGroup}
-        position={[0, -0.05, -0.175]}
+        position={[0, -0.05, -0.275]}
         scale={[0.045, 0.045, 0.045]}
       >
-        <FaceMesh />
+        <FaceMesh material={new THREE.MeshNormalMaterial()} />
       </group>
 
       {/* {createPortal(
@@ -166,7 +167,11 @@ const Content = ({ depthBuffer, depthMaterial }) => {
     gl.setRenderTarget(depthBuffer)
 
     // render post FX
-    // mesh.current.material.uniforms.depthInfo.value = depthBuffer.texture
+    mesh.current.material.uniforms.cameraNear.value = camera.near
+    mesh.current.material.uniforms.cameraFar.value = camera.far
+    mesh.current.material.uniforms.depthInfo.value = depthBuffer.texture
+    // mesh.current.material.uniforms.texture1.value = depthBuffer.texture
+    gl.render(scene, camera)
 
     // console.log('mesh.current.material', mesh.current.material)
     // mesh.current.material.uniforms.tDiffuse.value = depthBuffer.texture
@@ -191,10 +196,10 @@ const Content = ({ depthBuffer, depthMaterial }) => {
           side={THREE.DoubleSide}
           cameraNear={camera.near}
           cameraFar={camera.far}
-          time={0}
           depthInfo={depthBuffer.texture}
-          transparent
-          depthWrite={false}
+          // texture1={depthBuffer.texture}
+          // transparent
+          depthWrite={true}
           // resolution={new THREE.Vector4()}
           // uvRate1={new THREE.Vector2(1, 1)}
         />
@@ -286,13 +291,13 @@ const Everything = () => {
         <Content depthBuffer={depthBuffer} depthMaterial={depthMaterial} />
       </group>
 
-      <pointLight position={[-1, 0, 1]} color="lightblue" intensity={2.5} />
+      <pointLight position={[-1, 0, 1]} color="lightblue" intensity={1.5} />
       <group ref={group}>
         <pointLight
           ref={pointLight}
           color="yellow"
           position={[4, 4, -3]}
-          intensity={3}
+          intensity={1}
         />
       </group>
       <spotLight
@@ -300,7 +305,7 @@ const Everything = () => {
         position={[1, 1, 2]}
         ref={spotLight}
         angle={0.5}
-        distance={20}
+        distance={100}
       />
       <gridHelper args={[30, 30, 30]} />
     </>

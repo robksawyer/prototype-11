@@ -6,6 +6,7 @@ import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei/useGLTF'
 
 export default function Model(props) {
+  const { material } = props
   const group = useRef()
   const { nodes, materials } = useGLTF('/3d/models/face_mesh_v030.glb')
   return (
@@ -13,7 +14,8 @@ export default function Model(props) {
       <group rotation={[Math.PI / 2, 0, 0]} scale={[0.4, 0.4, 0.4]}>
         <group position={[-3.29, 2.38, -2.61]} rotation={[0.02, 0, 0.06]}>
           <mesh
-            material={nodes.eyeLeft.material}
+            // material={nodes.eyeLeft.material}
+            material={material}
             geometry={nodes.eyeLeft.geometry}
             position={[0.18, 0, 0]}
             rotation={[1.57, 0.02, 0]}
@@ -22,7 +24,8 @@ export default function Model(props) {
         </group>
         <group position={[3.29, 2.38, -2.61]} rotation={[0.02, 0, 0.01]}>
           <mesh
-            material={nodes.eyeRight.material}
+            // material={nodes.eyeRight.material}
+            material={material}
             geometry={nodes.eyeRight.geometry}
             position={[-0.14, -0.01, 0]}
             rotation={[1.56, -0.06, 0]}
@@ -32,7 +35,8 @@ export default function Model(props) {
         <mesh material={nodes.teeth.material} geometry={nodes.teeth.geometry} />
         <mesh
           name="head"
-          material={nodes.head.material}
+          // material={nodes.head.material}
+          material={material}
           geometry={nodes.head.geometry}
           morphTargetDictionary={nodes.head.morphTargetDictionary}
           morphTargetInfluences={nodes.head.morphTargetInfluences}
