@@ -30,31 +30,33 @@ const DepthLines = (props) => {
 
   let target1 = useFBO({
     settings: {
-      format: THREE.RGBFormat,
-      // minFilter: THREE.NearestFilter,
-      // magFilter: THREE.NearestFilter,
-      // generateMipmaps: false,
-      stencilBuffer: false,
+      // stencilBuffer: false,
       depthBuffer: true,
-      type: THREE.UnsignedShortType,
       depthTexture: new THREE.DepthTexture(),
     },
   })
+
+  target1.texture.format = THREE.RGBFormat
+  target1.texture.minFilter = THREE.NearestFilter
+  target1.texture.magFilter = THREE.NearestFilter
+  target1.texture.generateMipmaps = false
+
   target1.depthTexture.type = type
   target1.depthTexture.format = format
 
   let target2 = useFBO({
     settings: {
-      format: THREE.RGBFormat,
-      // minFilter: THREE.NearestFilter,
-      // magFilter: THREE.NearestFilter,
-      // generateMipmaps: false,
-      stencilBuffer: false,
       depthBuffer: true,
-      type: THREE.UnsignedShortType,
+      // type: THREE.UnsignedShortType,
       depthTexture: new THREE.DepthTexture(),
     },
   })
+
+  target2.texture.format = THREE.RGBFormat
+  target2.texture.minFilter = THREE.NearestFilter
+  target2.texture.magFilter = THREE.NearestFilter
+  target2.texture.generateMipmaps = false
+
   target2.depthTexture.type = type
   target2.depthTexture.format = format
 
@@ -117,7 +119,7 @@ const DepthLines = (props) => {
         side={THREE.DoubleSide}
         cameraNear={camera1.near}
         cameraFar={camera1.far}
-        progress={0.6}
+        progress={1}
         // depthInfo={depthBuffer.texture}
         // texture1={depthBuffer.texture}
         // transparent
