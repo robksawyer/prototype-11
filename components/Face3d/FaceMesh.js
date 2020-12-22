@@ -11,7 +11,7 @@ export default function Model(props) {
   const { nodes, materials } = useGLTF('/3d/models/face_mesh_v030.glb')
   return (
     <group ref={group} {...props} dispose={null}>
-      <group rotation={[Math.PI / 2, 0, 0]} scale={[0.4, 0.4, 0.4]}>
+      <group rotation={[Math.PI / 2, 0, 0]} scale={[0.045, 0.045, 0.045]}>
         <group position={[-3.29, 2.38, -2.61]} rotation={[0.02, 0, 0.06]}>
           <mesh
             // material={nodes.eyeLeft.material}

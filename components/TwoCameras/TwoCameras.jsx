@@ -22,26 +22,26 @@ const TwoCameras = (props) => {
   useHelper(camera1, THREE.CameraHelper)
   useHelper(camera2, THREE.CameraHelper)
 
-  useFrame(({ clock }) => {
-    // Move the cameras back and forth
-    camera1.current.position.z = THREE.MathUtils.lerp(
-      camera1.current.position.z,
-      camera1.current.position.z + Math.sin(clock.getElapsedTime()) * 1.15,
-      0.01
-    )
-    camera2.current.position.z = THREE.MathUtils.lerp(
-      camera2.current.position.z,
-      camera2.current.position.z + Math.sin(clock.getElapsedTime() / 2) * 1.15,
-      0.01
-    )
-  })
+  // useFrame(({ clock }) => {
+  //   // Move the cameras back and forth
+  //   camera1.current.position.z = THREE.MathUtils.lerp(
+  //     camera1.current.position.z,
+  //     camera1.current.position.z + Math.sin(clock.getElapsedTime()) * 1.15,
+  //     0.01
+  //   )
+  //   camera2.current.position.z = THREE.MathUtils.lerp(
+  //     camera2.current.position.z,
+  //     camera2.current.position.z + Math.sin(clock.getElapsedTime() / 2) * 1.15,
+  //     0.01
+  //   )
+  // })
 
   return (
     <>
       <PerspectiveCamera
         ref={camera1}
-        position={[0, -0.5, 1]}
-        args={[70, window.innerWidth / window.innerHeight, 0.01, 5]}
+        position={[0, 0, 2]}
+        args={[70, window.innerWidth / window.innerHeight, 0.2, 5]}
       />
       <PerspectiveCamera
         ref={camera2}

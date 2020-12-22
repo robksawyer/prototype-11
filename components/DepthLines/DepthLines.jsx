@@ -23,6 +23,9 @@ const DepthLines = (props) => {
 
   console.log('depthMaterial', depthMaterial)
 
+  let format = THREE.DepthFormat
+  let type = THREE.UnsignedShortType
+
   const target1 = useFBO({
     settings: {
       format: THREE.RGBFormat,
@@ -35,6 +38,8 @@ const DepthLines = (props) => {
       depthTexture: new THREE.DepthTexture(),
     },
   })
+  target1.depthTexture.type = type
+  target1.depthTexture.format = format
 
   const target2 = useFBO({
     settings: {
@@ -48,6 +53,8 @@ const DepthLines = (props) => {
       depthTexture: new THREE.DepthTexture(),
     },
   })
+  target2.depthTexture.type = type
+  target2.depthTexture.format = format
 
   console.log('target1', target1)
   console.log('target2', target2)
@@ -71,9 +78,8 @@ const DepthLines = (props) => {
     // mesh.current.material.uniforms.tDiffuse.value = depthBuffer.texture
 
     // Clear the render target and the overrided scene material
-    gl.setRenderTarget(null)
     scene.overrideMaterial = null
-
+    gl.setRenderTarget(null)
     gl.render(scene, camera1)
 
     gl.autoClear = false

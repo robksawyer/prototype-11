@@ -14,26 +14,26 @@ const Face3d = (props) => {
   const { tagName: Tag, className, variant, children } = props
 
   const face = useResource()
-  useFrame(({ clock }) => {
-    // cam.current.updateMatrix
-    // gl.autoClear = true
 
+  useFrame(({ clock }) => {
     face.current.position.z = THREE.MathUtils.lerp(
       face.current.position.z,
-      face.current.position.z + Math.sin(clock.getElapsedTime()) * 0.15,
+      face.current.position.z + Math.sin(clock.getElapsedTime()) * 0.35,
       0.01
     )
-
-    // render scene into depthBuffer
-    // scene.overrideMaterial = depthMaterial
-    // gl.setRenderTarget(depthBuffer)
-
-    // gl.render(scene, camera)
+    face.current.rotation.y = THREE.MathUtils.lerp(
+      face.current.rotation.y,
+      face.current.rotation.y + Math.sin(clock.getElapsedTime()) * 0.15,
+      0.01
+    )
+    // face.current.position.z =
+    //   -1.7 + 0.15 * Math.sin(clock.getElapsedTime() / 50)
+    // face.current.rotation.y = 0.25 * Math.sin(clock.getElapsedTime() / 100)
   })
 
   return (
     <Suspense fallback={null}>
-      <group ref={face} scale={[0.045, 0.045, 0.045]}>
+      <group ref={face}>
         <FaceMesh material={new THREE.MeshBasicMaterial({ color: 0x000000 })} />
       </group>
     </Suspense>
