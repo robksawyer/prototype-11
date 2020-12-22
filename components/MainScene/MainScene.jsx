@@ -43,7 +43,6 @@ import Loader from '../Loader'
 
 // Shader stack
 import './shaders/defaultShaderMaterial'
-import { MeshNormalMaterial } from 'three'
 
 // Texture loading examples
 // const envMap = useCubeTexture(
@@ -128,7 +127,7 @@ const FaceContent = ({ depthBuffer, depthMaterial }) => {
       <group
         ref={faceGroup}
         position={[0, -0.05, -0.275]}
-        scale={[0.045, 0.045, 0.045]}
+        // scale={[0.045, 0.045, 0.045]}
       >
         <FaceMesh material={new THREE.MeshNormalMaterial()} />
       </group>
@@ -207,7 +206,7 @@ const Content = ({ depthBuffer, depthMaterial }) => {
       {/* Line geometry */}
       {/* <group position={[0, 0, 0]}>
         {new Array(totalLines).fill(null).map((_, i) => (
-          <mesh
+          <mesh 
             key={`line-${i}`}
             position={[0, (i - totalLines / 2) / totalLines / 2, 0]}
             castShadow
