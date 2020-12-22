@@ -127,7 +127,7 @@ float readDepth( sampler2D depthSampler, vec2 coord ) {
 
 void main() {
     vUv = uv;
-    vec2 vUv1 = (vec2(vUv.x,y) - 0.5)/resolution.zw + vec2(0.5);
+    vUv1 = ( vec2(vUv.x,y) - 0.5) / resolution.zw + vec2(0.5);
     float depth = readDepth( depthInfo, vUv1 );
 
     vec3 pos = position;

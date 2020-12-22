@@ -48,7 +48,9 @@ const DefaultShaderMaterial = shaderMaterial(
     texture1: null,
     depthInfo: null,
     cameraNear: 1.0,
+    ttt: null,
     cameraFar: 2000.0,
+    progress: 0.0,
     mouse: new THREE.Vector2(),
     resolution: new THREE.Vector4(),
     // texture1: new THREE.TextureLoader(

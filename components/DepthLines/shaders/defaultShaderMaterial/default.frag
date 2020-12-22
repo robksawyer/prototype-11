@@ -11,7 +11,6 @@ uniform float time;
 uniform float progress;
 
 uniform vec4 resolution;
-varying vec2 vUv;
 varying vec3 vPosition;
 varying vec3 vNormal;
 
@@ -21,7 +20,6 @@ uniform sampler2D depthInfo;
 varying float vDepth;
 varying vec2 vUv;
 varying vec2 vUv1;
-varying vec3 vPosition;
 uniform float cameraNear;
 uniform float cameraFar;
 

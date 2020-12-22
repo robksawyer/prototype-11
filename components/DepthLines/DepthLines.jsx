@@ -14,10 +14,8 @@ import styles from './DepthLines.module.css'
 import './shaders/defaultShaderMaterial'
 
 const DepthLines = (props) => {
-  const { tagName: Tag, className, variant, children, camera } = props
+  const { tagName: Tag, className, variant, children, camera1, camera2 } = props
   const mesh = useResource()
-
-  console.log('camera', camera)
 
   const depthMaterial = new THREE.MeshDepthMaterial({
     depthPacking: THREE.BasicDepthPacking,
@@ -33,8 +31,8 @@ const DepthLines = (props) => {
       // generateMipmaps: false,
       stencilBuffer: false,
       depthBuffer: true,
-      // type: THREE.UnsignedShortType,
-      // depthTexture: new THREE.DepthTexture(),
+      type: THREE.UnsignedShortType,
+      depthTexture: new THREE.DepthTexture(),
     },
   })
 
@@ -46,26 +44,28 @@ const DepthLines = (props) => {
       // generateMipmaps: false,
       stencilBuffer: false,
       depthBuffer: true,
-      // type: THREE.UnsignedShortType,
-      // depthTexture: new THREE.DepthTexture(),
+      type: THREE.UnsignedShortType,
+      depthTexture: new THREE.DepthTexture(),
     },
   })
 
   console.log('target1', target1)
   console.log('target2', target2)
 
-  useFrame(({ gl, scene }) => {
+  useFrame(({ gl, scene, clock }) => {
     gl.autoClear = true
-
     scene.overrideMaterial = depthMaterial
     gl.setRenderTarget(target1)
 
-    // render post FX
-    // mesh.material.uniforms.cameraNear.value = camera.near
-    // mesh.material.uniforms.cameraFar.value = camera.far
-    mesh.material.uniforms.ttt.value = target1.depthTexture
+    if (mesh && mesh.material) {
+      // render post FX
+      // mesh.material.uniforms.cameraNear.value = camera.near
+      // mesh.material.uniforms.cameraFar.value = camera.far
+      mesh.material.uniforms.time.value = clock.getElapsedTime()
+      mesh.material.uniforms.ttt.value = target1.depthTexture
+    }
 
-    gl.render(scene, camera)
+    gl.render(scene, camera2)
 
     // console.log('mesh.current.material', mesh.current.material)
     // mesh.current.material.uniforms.tDiffuse.value = depthBuffer.texture
@@ -74,10 +74,9 @@ const DepthLines = (props) => {
     gl.setRenderTarget(null)
     scene.overrideMaterial = null
 
-    gl.render(scene, camera)
+    gl.render(scene, camera1)
 
     gl.autoClear = false
-
     gl.clearDepth()
   })
 
@@ -102,8 +101,9 @@ const DepthLines = (props) => {
       <defaultShaderMaterial
         attach="material"
         side={THREE.DoubleSide}
-        cameraNear={camera.near}
-        cameraFar={camera.far}
+        cameraNear={camera1.near}
+        cameraFar={camera1.far}
+        progress={0.6}
         // depthInfo={depthBuffer.texture}
         // texture1={depthBuffer.texture}
         // transparent

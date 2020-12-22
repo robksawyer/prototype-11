@@ -34,7 +34,7 @@ const Face3d = (props) => {
   return (
     <Suspense fallback={null}>
       <group ref={face} scale={[0.045, 0.045, 0.045]}>
-        <FaceMesh material={new THREE.MeshNormalMaterial()} />
+        <FaceMesh material={new THREE.MeshBasicMaterial({ color: 0x000000 })} />
       </group>
     </Suspense>
   )

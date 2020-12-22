@@ -49,7 +49,9 @@ const TwoCameras = (props) => {
         args={[70, window.innerWidth / window.innerHeight, 2.1, 3]}
       />
 
-      <DepthLines camera={camera1.current} />
+      {camera1.current && camera2.current && (
+        <DepthLines camera1={camera1.current} camera2={camera2.current} />
+      )}
     </>
   )
 }
