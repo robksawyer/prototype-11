@@ -17,16 +17,18 @@ const DepthLines = (props) => {
   const { tagName: Tag, className, variant, children, camera1, camera2 } = props
   const mesh = useResource()
 
+  // Note: Without depth material added to scene as an override the performance
+  // suffers tremendously. Why is that?
   const depthMaterial = new THREE.MeshDepthMaterial({
     depthPacking: THREE.BasicDepthPacking,
   })
 
-  console.log('depthMaterial', depthMaterial)
+  // console.log('depthMaterial', depthMaterial)
 
   let format = THREE.DepthFormat
   let type = THREE.UnsignedShortType
 
-  const target1 = useFBO({
+  let target1 = useFBO({
     settings: {
       format: THREE.RGBFormat,
       // minFilter: THREE.NearestFilter,
@@ -41,7 +43,7 @@ const DepthLines = (props) => {
   target1.depthTexture.type = type
   target1.depthTexture.format = format
 
-  const target2 = useFBO({
+  let target2 = useFBO({
     settings: {
       format: THREE.RGBFormat,
       // minFilter: THREE.NearestFilter,
@@ -69,7 +71,7 @@ const DepthLines = (props) => {
       // mesh.material.uniforms.cameraNear.value = camera.near
       // mesh.material.uniforms.cameraFar.value = camera.far
       mesh.material.uniforms.time.value = clock.getElapsedTime()
-      mesh.material.uniforms.ttt.value = target1.depthTexture
+      mesh.material.uniforms.ttt.value = target2.depthTexture
     }
 
     gl.render(scene, camera2)
@@ -84,6 +86,12 @@ const DepthLines = (props) => {
 
     gl.autoClear = false
     gl.clearDepth()
+
+    // Note: I'm really confused about why this is in the original example.
+    // swap
+    // let temp = target1
+    // target1 = target2
+    // target2 = temp
   })
 
   // for (let i = 0; i <= 100; i++) {
