@@ -4,7 +4,7 @@
 import React, { useEffect } from 'react'
 import * as THREE from 'three'
 import PropTypes from 'prop-types'
-import { useResource, useFrame } from 'react-three-fiber'
+import { useResource, useFrame, useUpdate } from 'react-three-fiber'
 
 import { useFBO } from '../../hooks/useFBO'
 
@@ -26,11 +26,29 @@ const DepthLines = (props) => {
 
   const meshes = []
 
+  const pBuffG = useUpdate(
+    (geometry) => {
+      const { i } = geometry.userData
+      let y = []
+      let len = geometry.attributes.position.array.length
+      for (let j = 0; j < len / 3; j++) {
+        y.push(i / 100)
+      }
+      geometry.setAttribute(
+        'y',
+        new THREE.BufferAttribute(new Float32Array(y), 1)
+      )
+
+      geometry.attributes.y.needsUpdate = true
+    },
+    [] // execute only if these properties change
+  )
+
   // Note: Without depth material added to scene as an override the performance
   // suffers tremendously. Why is that?
-  const depthMaterial = new THREE.MeshDepthMaterial({
-    depthPacking: THREE.BasicDepthPacking,
-  })
+  // const depthMaterial = new THREE.MeshDepthMaterial({
+  //   depthPacking: THREE.BasicDepthPacking,
+  // })
 
   // console.log('depthMaterial', depthMaterial)
 
@@ -69,8 +87,8 @@ const DepthLines = (props) => {
   target2.depthTexture.type = type
   target2.depthTexture.format = format
 
-  console.log('target1', target1)
-  console.log('target2', target2)
+  // console.log('target1', target1)
+  // console.log('target2', target2)
 
   useFrame(({ gl, scene, clock }) => {
     gl.autoClear = true
@@ -87,9 +105,6 @@ const DepthLines = (props) => {
 
     gl.render(scene, camera2)
 
-    // console.log('mesh.current.material', mesh.current.material)
-    // mesh.current.material.uniforms.tDiffuse.value = depthBuffer.texture
-
     // Clear the render target and the overrided scene material
     // scene.overrideMaterial = null
     gl.setRenderTarget(null)
@@ -105,24 +120,7 @@ const DepthLines = (props) => {
     // target2 = temp
   })
 
-  useEffect(() => {
-    if (meshes && meshes.length) {
-      meshes.map((mesh, i) => {
-        let y = []
-        let len = mesh.current.geometry.attributes.position.array.length
-        for (let j = 0; j < len / 3; j++) {
-          y.push(i / 100)
-        }
-        mesh.current.geometry.setAttribute(
-          'y',
-          new THREE.BufferAttribute(new Float32Array(y), 1)
-        )
-
-        // mesh.current.material.uniforms.depthInfo.value = target1.depthTexture
-      })
-    }
-  }, [meshes])
-
+  // Original example
   // for (let i = 0; i <= 100; i++) {
   //   this.geometry = new THREE.PlaneBufferGeometry(2, 0.005, 300, 1);
 
@@ -140,25 +138,25 @@ const DepthLines = (props) => {
 
   return Array.from(Array(100).keys()).map((_, i) => {
     const mesh = useResource()
-    meshes.push(mesh)
+
+    meshes[i] = mesh
 
     return (
-      <mesh ref={mesh} key={`mesh-${i}`} position={[0, (i - 50) / 50, 0]}>
-        <planeBufferGeometry attach="geometry" args={[2, 0.005, 300, 1]} />
+      <mesh ref={meshes[i]} key={`mesh-${i}`} position={[0, (i - 50) / 50, 0]}>
+        <planeBufferGeometry
+          ref={pBuffG}
+          userData={{ i }}
+          attach="geometry"
+          args={[2, 0.005, 300, 1]}
+        />
         <defaultShaderMaterial
           attach="material"
           side={THREE.DoubleSide}
-          cameraNear={1.0}
+          cameraNear={camera1.near}
           cameraFar={camera1.far}
           progress={progress}
           depthInfo={target1.depthTexture}
-          // depthInfo={depthBuffer.texture}
-          // texture1={depthBuffer.texture}
-          // transparent
-          // wireframe
           depthWrite={true}
-          // resolution={new THREE.Vector4()}
-          // uvRate1={new THREE.Vector2(1, 1)}
         />
       </mesh>
     )
