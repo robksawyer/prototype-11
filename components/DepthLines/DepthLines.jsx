@@ -155,7 +155,7 @@ const DepthLines = (props) => {
           cameraNear={camera1.near}
           cameraFar={camera1.far}
           progress={progress}
-          depthInfo={target1.depthTexture}
+          depthInfo={target2.depthTexture}
           depthWrite={true}
         />
       </mesh>
