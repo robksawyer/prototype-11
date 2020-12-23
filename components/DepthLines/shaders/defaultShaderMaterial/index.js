@@ -48,7 +48,6 @@ const DefaultShaderMaterial = shaderMaterial(
     texture1: null,
     depthInfo: null,
     cameraNear: 1.0,
-    ttt: null,
     cameraFar: 2000.0,
     progress: 0.0,
     mouse: new THREE.Vector2(),
@@ -66,7 +65,7 @@ const DefaultShaderMaterial = shaderMaterial(
   // fragment shader
   fragment,
   (material) => {
-    console.log('material', material)
+    // console.log('material', material)
     material.side = THREE.DoubleSide
     // material.wireframe = false
     // material.vertexColors = true
@@ -78,9 +77,9 @@ const DefaultShaderMaterial = shaderMaterial(
     // material.defines = {
     //   '#extension GL_OES_standard_derivatives': 'enable',
     // }
-    // material.extensions = {
-    //   derivatives: true,
-    // }
+    material.extensions = {
+      derivatives: true,
+    }
   }
 )
 

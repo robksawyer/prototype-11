@@ -14,7 +14,15 @@ import styles from './DepthLines.module.css'
 import './shaders/defaultShaderMaterial'
 
 const DepthLines = (props) => {
-  const { tagName: Tag, className, variant, children, camera1, camera2 } = props
+  const {
+    tagName: Tag,
+    className,
+    variant,
+    children,
+    progress,
+    camera1,
+    camera2,
+  } = props
   const mesh = useResource()
 
   // Note: Without depth material added to scene as an override the performance
@@ -73,7 +81,7 @@ const DepthLines = (props) => {
       // mesh.material.uniforms.cameraNear.value = camera.near
       // mesh.material.uniforms.cameraFar.value = camera.far
       mesh.material.uniforms.time.value = clock.getElapsedTime()
-      mesh.material.uniforms.ttt.value = target2.depthTexture
+      mesh.material.uniforms.depthInfo.value = target2.depthTexture
     }
 
     gl.render(scene, camera2)
@@ -91,9 +99,9 @@ const DepthLines = (props) => {
 
     // Note: I'm really confused about why this is in the original example.
     // swap
-    // let temp = target1
-    // target1 = target2
-    // target2 = temp
+    let temp = target1
+    target1 = target2
+    target2 = temp
   })
 
   // for (let i = 0; i <= 100; i++) {
@@ -113,16 +121,17 @@ const DepthLines = (props) => {
 
   return (
     <mesh ref={mesh}>
-      <planeGeometry attach="geometry" args={[2, 2, 100, 100]} />
+      <planeGeometry attach="geometry" args={[2, 2, 1, 100]} />
       <defaultShaderMaterial
         attach="material"
         side={THREE.DoubleSide}
         cameraNear={camera1.near}
         cameraFar={camera1.far}
-        progress={1}
+        progress={progress}
         // depthInfo={depthBuffer.texture}
         // texture1={depthBuffer.texture}
         // transparent
+        wireframe
         depthWrite={true}
         // resolution={new THREE.Vector4()}
         // uvRate1={new THREE.Vector2(1, 1)}
@@ -136,6 +145,7 @@ DepthLines.propTypes = {
   className: PropTypes.string,
   variant: PropTypes.oneOf(['default']),
   children: PropTypes.node,
+  progress: PropTypes.number,
 }
 
 DepthLines.defaultProps = {
@@ -143,6 +153,7 @@ DepthLines.defaultProps = {
   className: '',
   variant: 'default',
   children: '',
+  progress: 1.0,
 }
 
 export default DepthLines

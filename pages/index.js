@@ -25,6 +25,7 @@ import HamburgerMenu from '../components/HamburgerMenu'
 // import WaveText from '../components/WaveText'
 import Face3d from '../components/Face3d'
 import StatsGroup from '../components/StatsGroup'
+import LightsBasic from '../components/LightsBasic'
 
 export default function Home() {
   const { ErrorBoundary, didCatch, error } = useErrorBoundary()
@@ -57,6 +58,7 @@ export default function Home() {
             {/* <MainScene /> */}
             <TwoCameras />
             <Face3d />
+            <LightsBasic />
             {/* <WaveText className="absolute bottom-0 flex items-center justify-center w-screen h-screen pointer-events-none select-none" /> */}
             <OrbitControls />
             <gridHelper args={[30, 30, 30]} />
