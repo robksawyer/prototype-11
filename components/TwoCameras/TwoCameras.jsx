@@ -26,7 +26,7 @@ const TwoCameras = (props) => {
     progress,
   } = useTweaks('Camera Positions', {
     progress: {
-      value: 1.0,
+      value: 0.2,
       min: -10.0,
       max: 10.0,
     },

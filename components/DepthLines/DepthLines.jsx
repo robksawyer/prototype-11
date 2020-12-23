@@ -1,7 +1,7 @@
 /**
  * @file DepthLines.js
  */
-import * as React from 'react'
+import React, { useEffect } from 'react'
 import * as THREE from 'three'
 import PropTypes from 'prop-types'
 import { useResource, useFrame } from 'react-three-fiber'
@@ -23,7 +23,8 @@ const DepthLines = (props) => {
     camera1,
     camera2,
   } = props
-  const mesh = useResource()
+
+  const meshes = []
 
   // Note: Without depth material added to scene as an override the performance
   // suffers tremendously. Why is that?
@@ -73,16 +74,16 @@ const DepthLines = (props) => {
 
   useFrame(({ gl, scene, clock }) => {
     gl.autoClear = true
-    scene.overrideMaterial = depthMaterial
+    // scene.overrideMaterial = depthMaterial
     gl.setRenderTarget(target1)
 
-    if (mesh && mesh.material) {
-      // render post FX
-      // mesh.material.uniforms.cameraNear.value = camera.near
-      // mesh.material.uniforms.cameraFar.value = camera.far
-      mesh.material.uniforms.time.value = clock.getElapsedTime()
-      mesh.material.uniforms.depthInfo.value = target2.depthTexture
-    }
+    // if (mesh && mesh.material) {
+    //   // render post FX
+    //   // mesh.material.uniforms.cameraNear.value = camera.near
+    //   // mesh.material.uniforms.cameraFar.value = camera.far
+    //   mesh.material.uniforms.time.value = clock.getElapsedTime()
+    //   mesh.material.uniforms.depthInfo.value = target2.depthTexture
+    // }
 
     gl.render(scene, camera2)
 
@@ -90,7 +91,7 @@ const DepthLines = (props) => {
     // mesh.current.material.uniforms.tDiffuse.value = depthBuffer.texture
 
     // Clear the render target and the overrided scene material
-    scene.overrideMaterial = null
+    // scene.overrideMaterial = null
     gl.setRenderTarget(null)
     gl.render(scene, camera1)
 
@@ -99,10 +100,26 @@ const DepthLines = (props) => {
 
     // Note: I'm really confused about why this is in the original example.
     // swap
-    let temp = target1
-    target1 = target2
-    target2 = temp
+    // let temp = target1
+    // target1 = target2
+    // target2 = temp
   })
+
+  useEffect(() => {
+    if (meshes && meshes.length) {
+      meshes.map((mesh, i) => {
+        let y = []
+        let len = mesh.current.geometry.attributes.position.array.length
+        for (let j = 0; j < len / 3; j++) {
+          y.push(i / 100)
+        }
+        mesh.current.geometry.setAttribute(
+          'y',
+          new THREE.BufferAttribute(new Float32Array(y), 1)
+        )
+      })
+    }
+  }, [meshes])
 
   // for (let i = 0; i <= 100; i++) {
   //   this.geometry = new THREE.PlaneBufferGeometry(2, 0.005, 300, 1);
@@ -119,25 +136,30 @@ const DepthLines = (props) => {
   //   this.scene.add(this.plane);
   // }
 
-  return (
-    <mesh ref={mesh}>
-      <planeGeometry attach="geometry" args={[2, 2, 1, 100]} />
-      <defaultShaderMaterial
-        attach="material"
-        side={THREE.DoubleSide}
-        cameraNear={camera1.near}
-        cameraFar={camera1.far}
-        progress={progress}
-        // depthInfo={depthBuffer.texture}
-        // texture1={depthBuffer.texture}
-        // transparent
-        wireframe
-        depthWrite={true}
-        // resolution={new THREE.Vector4()}
-        // uvRate1={new THREE.Vector2(1, 1)}
-      />
-    </mesh>
-  )
+  return Array.from(Array(100).keys()).map((_, i) => {
+    const mesh = useResource()
+    meshes.push(mesh)
+
+    return (
+      <mesh ref={mesh} key={`mesh-${i}`} position={[0, (i - 50) / 50, 0]}>
+        <planeBufferGeometry attach="geometry" args={[2, 0.005, 300, 1]} />
+        <defaultShaderMaterial
+          attach="material"
+          side={THREE.DoubleSide}
+          cameraNear={1.0}
+          cameraFar={camera1.far}
+          progress={progress}
+          // depthInfo={depthBuffer.texture}
+          // texture1={depthBuffer.texture}
+          // transparent
+          // wireframe
+          depthWrite={true}
+          // resolution={new THREE.Vector4()}
+          // uvRate1={new THREE.Vector2(1, 1)}
+        />
+      </mesh>
+    )
+  })
 }
 
 DepthLines.propTypes = {
