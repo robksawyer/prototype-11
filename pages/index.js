@@ -44,6 +44,7 @@ export default function Home() {
           <Canvas
             pixelRatio={(process.browser && window.devicePixelRatio) || 1}
             shadowMap
+            colorManagement={false}
             style={{
               width: '100vw',
               height: 'calc(100vh - 50px)',
