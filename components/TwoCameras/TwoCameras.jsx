@@ -30,29 +30,29 @@ const TwoCameras = (props) => {
       min: -10.0,
       max: 10.0,
     },
-    camera1Position: {
-      value: { x: 0, y: 0 },
-    },
-    camera1ZDepth: {
-      value: 1,
-      min: -10,
-      max: 10,
-    },
-    camera2Position: {
-      value: { x: 0, y: 0 },
-    },
-    camera2ZDepth: {
-      value: 2,
-      min: -10,
-      max: 10,
-    },
+    // camera1Position: {
+    //   value: { x: 0, y: 0 },
+    // },
+    // camera1ZDepth: {
+    //   value: 1,
+    //   min: -10,
+    //   max: 10,
+    // },
+    // camera2Position: {
+    //   value: { x: 0, y: 0 },
+    // },
+    // camera2ZDepth: {
+    //   value: 2,
+    //   min: -10,
+    //   max: 10,
+    // },
   })
 
   const camera1 = useResource()
   const camera2 = useResource()
 
-  useHelper(camera1, THREE.CameraHelper)
-  useHelper(camera2, THREE.CameraHelper)
+  // useHelper(camera1, THREE.CameraHelper)
+  // useHelper(camera2, THREE.CameraHelper)
 
   // useFrame(({ clock }) => {
   //   // Move the cameras back and forth
@@ -72,16 +72,16 @@ const TwoCameras = (props) => {
     <>
       <PerspectiveCamera
         ref={camera1}
-        position-x={camera1Position.x}
-        position-y={camera1Position.y}
-        position-z={camera1ZDepth}
+        position-x={0}
+        position-y={0}
+        position-z={1}
         args={[70, window.innerWidth / window.innerHeight, 0.2, 5]}
       />
       <PerspectiveCamera
         ref={camera2}
-        position-x={camera2Position.x}
-        position-y={camera2Position.y}
-        position-z={camera2ZDepth}
+        position-x={0}
+        position-y={0}
+        position-z={2}
         args={[70, window.innerWidth / window.innerHeight, 2.1, 3]}
       />
 

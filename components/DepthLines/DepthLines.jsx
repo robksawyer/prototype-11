@@ -117,6 +117,8 @@ const DepthLines = (props) => {
           'y',
           new THREE.BufferAttribute(new Float32Array(y), 1)
         )
+
+        // mesh.current.material.uniforms.depthInfo.value = target1.depthTexture
       })
     }
   }, [meshes])
@@ -149,6 +151,7 @@ const DepthLines = (props) => {
           cameraNear={1.0}
           cameraFar={camera1.far}
           progress={progress}
+          depthInfo={target1.depthTexture}
           // depthInfo={depthBuffer.texture}
           // texture1={depthBuffer.texture}
           // transparent

@@ -62,7 +62,7 @@ export default function Home() {
             <LightsBasic />
             {/* <WaveText className="absolute bottom-0 flex items-center justify-center w-screen h-screen pointer-events-none select-none" /> */}
             <OrbitControls />
-            <gridHelper args={[30, 30, 30]} />
+            {/* <gridHelper args={[30, 30, 30]} /> */}
             <StatsGroup />
           </Canvas>
         </ErrorBoundary>

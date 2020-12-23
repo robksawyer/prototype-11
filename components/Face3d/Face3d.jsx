@@ -18,7 +18,7 @@ const Face3d = (props) => {
   useFrame(({ clock }) => {
     face.current.position.z = THREE.MathUtils.lerp(
       face.current.position.z,
-      face.current.position.z + Math.sin(clock.getElapsedTime()) * 0.55,
+      face.current.position.z + Math.sin(clock.getElapsedTime()) * 0.05,
       0.01
     )
     face.current.rotation.y = THREE.MathUtils.lerp(
@@ -33,9 +33,9 @@ const Face3d = (props) => {
 
   return (
     <Suspense fallback={null}>
-      <group ref={face}>
+      <group ref={face} position={[0, 0, -0.2]}>
         <FaceMesh
-          material={new THREE.MeshLambertMaterial({ color: 0x00ff00 })}
+          material={new THREE.MeshLambertMaterial({ color: 0x000000 })}
         />
       </group>
     </Suspense>
