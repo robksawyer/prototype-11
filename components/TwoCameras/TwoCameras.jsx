@@ -51,8 +51,8 @@ const TwoCameras = (props) => {
   const camera1 = useResource()
   const camera2 = useResource()
 
-  // useHelper(camera1, THREE.CameraHelper)
-  // useHelper(camera2, THREE.CameraHelper)
+  useHelper(camera1, THREE.CameraHelper)
+  useHelper(camera2, THREE.CameraHelper)
 
   // useFrame(({ clock }) => {
   //   // Move the cameras back and forth
@@ -75,14 +75,14 @@ const TwoCameras = (props) => {
         position-x={0}
         position-y={0}
         position-z={1}
-        args={[70, window.innerWidth / window.innerHeight, 0.2, 5]}
+        args={[70, window.innerWidth / window.innerHeight, 0.1, 5]}
       />
       <PerspectiveCamera
         ref={camera2}
         position-x={0}
         position-y={0}
-        position-z={2}
-        args={[70, window.innerWidth / window.innerHeight, 2.1, 3]}
+        position-z={4}
+        args={[70, window.innerWidth / window.innerHeight, 0.1, 3]}
       />
 
       {camera1.current && camera2.current && (

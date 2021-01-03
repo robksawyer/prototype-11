@@ -1,7 +1,7 @@
 /**
  * @file DepthLines.js
  */
-import React, { useEffect } from 'react'
+import React, { forwardRef, useRef, useMemo, createRef, useEffect } from 'react'
 import * as THREE from 'three'
 import PropTypes from 'prop-types'
 import { useResource, useFrame, useUpdate } from 'react-three-fiber'
@@ -12,6 +12,120 @@ import styles from './DepthLines.module.css'
 
 // Shader stack
 import './shaders/defaultShaderMaterial'
+
+// const InstancedPlane = (props) => {
+//   const { camera1, target2, i, progress, position } = props
+
+//   const pBuffG = useUpdate(
+//     (geometry) => {
+//       const { i } = geometry.userData
+//       let y = []
+//       let len = geometry.attributes.position.array.length
+//       for (let j = 0; j < len / 3; j++) {
+//         y.push(i / 100)
+//       }
+//       geometry.setAttribute(
+//         'y',
+//         new THREE.BufferAttribute(new Float32Array(y), 1)
+//       )
+
+//       geometry.attributes.y.needsUpdate = true
+//     },
+//     [] // execute only if these properties change
+//   )
+
+//   const ref = useUpdate((mesh) => {
+//     console.log(`mesh ${i}`, mesh)
+//     // mesh.material.uniforms.depthInfo.value = target2.depthTexture
+//   }, [])
+
+//   return (
+//     <instancedMesh ref={ref} position={position}>
+//       <planeBufferGeometry
+//         ref={pBuffG}
+//         userData={{ i }}
+//         attach="geometry"
+//         args={[2, 0.005, 300, 1]}
+//       />
+//       <defaultShaderMaterial
+//         attach="material"
+//         side={THREE.DoubleSide}
+//         cameraNear={camera1.near}
+//         cameraFar={camera1.far}
+//         progress={progress}
+//         depthInfo={target2.depthTexture}
+//         depthWrite={true}
+//       />
+//     </instancedMesh>
+//   )
+// }
+
+// eslint-disable-next-line react/display-name
+const InstancedPlane = forwardRef(
+  ({ amount = 100, camera1, progress, target1, target2, ...props }, ref) => {
+    // const mesh = useRef()
+    const dummy = new THREE.Object3D()
+
+    const coords = useMemo(
+      () => new Array(amount).fill().map((_, i) => [0, (i - 50) / 50, 0]),
+      [amount]
+    )
+
+    const geomRef = useUpdate(
+      (geometry) => {
+        console.log('geometry', geometry)
+      },
+      [] // execute only if these properties change
+    )
+
+    const mesh = useUpdate((mesh) => {
+      console.log('mesh', mesh)
+    }, [])
+
+    useFrame(({ clock }) => {
+      // const t = clock.getElapsedTime()
+      // coords.forEach(([x, y, z], i) => {
+      //   dummy.updateMatrix(void dummy.position.set(x + t, y + t, z + t))
+      //   mesh.current.setMatrixAt(i, dummy.matrix)
+      // })
+      // mesh.current.material.uniforms.time.value = t
+      mesh.current.material.uniforms.depthInfo.value = target2.depthTexture
+      mesh.current.material.needsUpdate = true
+      // mesh.current.instanceMatrix.needsUpdate = true
+    })
+
+    // useEffect(() => {
+    //   coords.forEach(([x, y, z], i) => {
+    //     dummy.updateMatrix(void dummy.position.set(x, y, z))
+    //     mesh.current.setMatrixAt(i, dummy.matrix)
+    //   })
+
+    //   mesh.current.material.needsUpdate = true
+    //   mesh.current.instanceMatrix.needsUpdate = true
+    // }, [coords, mesh])
+
+    return (
+      <group ref={ref} {...props}>
+        <instancedMesh ref={mesh} args={[null, null, amount]} renderOrder={2}>
+          <planeBufferGeometry
+            ref={geomRef}
+            attach="geometry"
+            args={[2, 0.005, 300, 1]}
+          />
+          <defaultShaderMaterial
+            attach="material"
+            side={THREE.DoubleSide}
+            cameraNear={camera1.near}
+            cameraFar={camera1.far}
+            progress={progress}
+            depthInfo={target2.depthTexture}
+            depthWrite={true}
+          />
+        </instancedMesh>
+      </group>
+    )
+  }
+)
 
 const DepthLines = (props) => {
   const {
@@ -24,26 +138,7 @@ const DepthLines = (props) => {
     camera2,
   } = props
 
-  const meshes = []
-
-  const pBuffG = useUpdate(
-    (geometry) => {
-      const { i } = geometry.userData
-      let y = []
-      let len = geometry.attributes.position.array.length
-      for (let j = 0; j < len / 3; j++) {
-        y.push(i / 100)
-      }
-      geometry.setAttribute(
-        'y',
-        new THREE.BufferAttribute(new Float32Array(y), 1)
-      )
-
-      geometry.attributes.y.needsUpdate = true
-    },
-    [] // execute only if these properties change
-  )
-
+  const mesh = createRef()
   // Note: Without depth material added to scene as an override the performance
   // suffers tremendously. Why is that?
   // const depthMaterial = new THREE.MeshDepthMaterial({
@@ -106,7 +201,7 @@ const DepthLines = (props) => {
     gl.render(scene, camera2)
 
     // Clear the render target and the overrided scene material
-    // scene.overrideMaterial = null
+    scene.overrideMaterial = null
     gl.setRenderTarget(null)
     gl.render(scene, camera1)
 
@@ -136,31 +231,16 @@ const DepthLines = (props) => {
   //   this.scene.add(this.plane);
   // }
 
-  return Array.from(Array(100).keys()).map((_, i) => {
-    const mesh = useResource()
-
-    meshes[i] = mesh
-
-    return (
-      <mesh ref={meshes[i]} key={`mesh-${i}`} position={[0, (i - 50) / 50, 0]}>
-        <planeBufferGeometry
-          ref={pBuffG}
-          userData={{ i }}
-          attach="geometry"
-          args={[2, 0.005, 300, 1]}
-        />
-        <defaultShaderMaterial
-          attach="material"
-          side={THREE.DoubleSide}
-          cameraNear={camera1.near}
-          cameraFar={camera1.far}
-          progress={progress}
-          depthInfo={target2.depthTexture}
-          depthWrite={true}
-        />
-      </mesh>
-    )
-  })
+  return (
+    <InstancedPlane
+      ref={mesh}
+      camera1={camera1}
+      camera2={camera2}
+      target1={target1}
+      target2={target2}
+      progress={progress}
+    />
+  )
 }
 
 DepthLines.propTypes = {
