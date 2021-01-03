@@ -62,22 +62,36 @@ import './shaders/defaultShaderMaterial'
 //   )
 // }
 
-const LineInstance = ({ position = [0, 0, 0] }) => {
-  const instance = useUpdate((instance) => {
-    // console.log('instance', instance)
-  })
-  // useFrame(({clock}) => {
-  //   instance.current.rotation.x = Math.sin() * clock.getElapsedTime()
-  //   instance.current.update()
-  // })
+// const LineInstance = ({ position = [0, 0, 0] }) => {
+//   const instance = useUpdate((instance) => {
+//     // console.log('instance', instance)
+//   })
 
-  return <Instance ref={instance} position={position} />
-}
+//   return <Instance ref={instance} position={position} />
+// }
 
 // eslint-disable-next-line react/display-name
 const InstancedPlane = React.forwardRef(
-  ({ amount = 100, camera1, progress, target1, target2, ...props }, ref) => {
+  ({ i, camera1, progress, target1, target2, ...props }, ref) => {
     // const dummy = new THREE.Object3D()
+
+    const pBuffG = useUpdate(
+      (geometry) => {
+        const { i } = geometry.userData
+        let y = []
+        let len = geometry.attributes.position.array.length
+        for (let j = 0; j < len / 3; j++) {
+          y.push(i / 100)
+        }
+        geometry.setAttribute(
+          'y',
+          new THREE.BufferAttribute(new Float32Array(y), 1)
+        )
+
+        geometry.attributes.y.needsUpdate = true
+      },
+      [] // execute only if these properties change
+    )
 
     const material = useUpdate(
       (material) => {
@@ -86,78 +100,58 @@ const InstancedPlane = React.forwardRef(
       [] // execute only if these properties change
     )
 
-    // const mesh = useUpdate((mesh) => {
-    //   console.log('mesh', mesh)
-    // }, [])
-
     useFrame(({ clock }) => {
-      const t = clock.getElapsedTime()
-      // coords.forEach(([x, y, z], i) => {
-      //   dummy.updateMatrix(void dummy.position.set(x + t, y + t, z + t))
-      //   mesh.current.setMatrixAt(i, dummy.matrix)
-      // })
-      material.current.uniforms.time.value = t
+      // render post FX
+      material.current.uniforms.time.value = clock.getElapsedTime()
       material.current.uniforms.depthInfo.value = target1.depthTexture
       material.current.needsUpdate = true
-      // mesh.current.instanceMatrix.needsUpdate = true
     })
 
-    // useEffect(() => {
-    //   coords.forEach(([x, y, z], i) => {
-    //     dummy.updateMatrix(void dummy.position.set(x, y, z))
-    //     mesh.current.setMatrixAt(i, dummy.matrix)
-    //   })
-
-    //   mesh.current.material.needsUpdate = true
-    //   mesh.current.instanceMatrix.needsUpdate = true
-    // }, [coords, mesh])
-
     return (
-      <group ref={ref} {...props}>
-        {[...Array(amount).keys()].map((_, i) => {
-          return (
-            <mesh key={`iLine-${i}`} position={[0, (i - 50) / 50, 0]}>
-              <planeBufferGeometry
-                attach="geometry"
-                args={[2, 0.005, 300, 1]}
-              />
-              <defaultShaderMaterial
-                attach="material"
-                ref={material}
-                side={THREE.DoubleSide}
-                cameraNear={camera1.near}
-                cameraFar={camera1.far}
-                progress={progress}
-                depthInfo={target1.depthTexture}
-                depthWrite={true}
-              />
-            </mesh>
-          )
-        })}
-        {/* <Instances>
-          <planeBufferGeometry attach="geometry" args={[2, 0.005, 300, 1]} />
-          <defaultShaderMaterial
-            attach="material"
-            ref={material}
-            side={THREE.DoubleSide}
-            cameraNear={camera1.near}
-            cameraFar={camera1.far}
-            progress={progress}
-            depthInfo={target1.depthTexture}
-            depthWrite={true}
-          />
-          {[...Array(amount).keys()].map((_, i) => {
-            return (
-              <LineInstance
-                key={`iLine-${i}`}
-                target={target1}
-                position={[0, (i - 50) / 50, 0]}
-              />
-            )
-          })}
-        </Instances> */}
-      </group>
+      <mesh position={[0, (i - 50) / 50, 0]}>
+        <planeBufferGeometry
+          ref={pBuffG}
+          attach="geometry"
+          args={[2, 0.005, 300, 1]}
+          userData={{ i }}
+        />
+        <defaultShaderMaterial
+          attach="material"
+          ref={material}
+          side={THREE.DoubleSide}
+          cameraNear={camera1.near}
+          cameraFar={camera1.far}
+          progress={progress}
+          depthInfo={target1.depthTexture}
+          depthWrite={true}
+        />
+      </mesh>
     )
+
+    // return (
+    //   <Instances>
+    //     <planeBufferGeometry attach="geometry" args={[2, 0.005, 300, 1]} />
+    //     <defaultShaderMaterial
+    //       attach="material"
+    //       ref={material}
+    //       side={THREE.DoubleSide}
+    //       cameraNear={camera1.near}
+    //       cameraFar={camera1.far}
+    //       progress={progress}
+    //       depthInfo={target1.depthTexture}
+    //       depthWrite={true}
+    //     />
+    //     {[...Array(amount).keys()].map((_, i) => {
+    //       return (
+    //         <LineInstance
+    //           key={`iLine-${i}`}
+    //           target={target1}
+    //           position={[0, (i - 50) / 50, 0]}
+    //         />
+    //       )
+    //     })}
+    //   </Instances>
+    // )
   }
 )
 
@@ -171,6 +165,8 @@ const DepthLines = (props) => {
     camera1,
     camera2,
   } = props
+
+  const amount = 100
 
   const mesh = createRef()
   // Note: Without depth material added to scene as an override the performance
@@ -265,16 +261,19 @@ const DepthLines = (props) => {
   //   this.scene.add(this.plane);
   // }
 
-  return (
-    <InstancedPlane
-      ref={mesh}
-      camera1={camera1}
-      camera2={camera2}
-      target1={target1}
-      target2={target2}
-      progress={progress}
-    />
-  )
+  return [...Array(amount).keys()].map((_, i) => {
+    return (
+      <InstancedPlane
+        key={`plane-${i}`}
+        i={i}
+        camera1={camera1}
+        camera2={camera2}
+        target1={target1}
+        target2={target2}
+        progress={progress}
+      />
+    )
+  })
 }
 
 DepthLines.propTypes = {

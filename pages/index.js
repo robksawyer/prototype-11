@@ -48,7 +48,7 @@ export default function Home() {
             style={{
               width: '100vw',
               height: 'calc(100vh - 50px)',
-              background: 'floralwhite',
+              background: 'black',
             }}
             onCreated={({ gl }) => {
               gl.physicallyCorrectLights = true

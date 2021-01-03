@@ -1,31 +1,4 @@
-// Default Shader
-// Rob Sawyer
-// @see https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
 #include <packing>
-
-// object.matrixWorld
-// uniform mat4 modelMatrix;
-
-// camera.matrixWorldInverse * object.matrixWorld
-// uniform mat4 modelViewMatrix;
-
-// camera.projectionMatrix
-// uniform mat4 projectionMatrix;
-
-// camera.matrixWorldInverse
-// uniform mat4 viewMatrix;
-
-// inverse transpose of modelViewMatrix
-// uniform mat3 normalMatrix;
-
-// camera position in world space
-// uniform vec3 cameraPosition;
-
-// default vertex attributes provided by Geometry and BufferGeometry
-// attribute vec3 position;
-// attribute vec3 normal;
-// attribute vec2 uv;
-
 //	Simplex 3D Noise 
 //	by Ian McEwan, Ashima Arts
 //
@@ -100,7 +73,6 @@ float snoise(vec3 v){
   return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), 
                                 dot(p2,x2), dot(p3,x3) ) );
 }
-
 uniform float time;
 uniform float progress;
 varying vec2 vUv;
@@ -108,31 +80,29 @@ varying vec2 vUv1;
 varying vec3 vPosition;
 varying float vDepth;
 uniform vec2 pixels;
-
+float PI = 3.141592653589793238;
 uniform sampler2D depthInfo;
 uniform vec4 resolution;
 
 uniform float cameraNear;
 uniform float cameraFar;
 
+
 attribute float y;
 
-float PI = 3.141592653589793238;
-
 float readDepth( sampler2D depthSampler, vec2 coord ) {
-    float fragCoordZ = texture2D( depthSampler, coord ).x;
-    float viewZ = perspectiveDepthToViewZ( fragCoordZ, cameraNear, cameraFar );
-    return viewZToOrthographicDepth( viewZ, cameraNear, cameraFar );
+	float fragCoordZ = texture2D( depthSampler, coord ).x;
+	float viewZ = perspectiveDepthToViewZ( fragCoordZ, cameraNear, cameraFar );
+	return viewZToOrthographicDepth( viewZ, cameraNear, cameraFar );
 }
-
 void main() {
-    vUv = uv;
-    vUv1 = ( vec2(vUv.x,y) - 0.5) / resolution.zw + vec2(0.5);
-    float depth = readDepth( depthInfo, vUv1 );
-
-    vec3 pos = position;
-    pos.z += (1. - depth) * 0.6 * progress;
-    pos.y += 0.01 * snoise( vec3( vUv1 * 30., time / 100. ) );
-    vDepth = depth;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
+  vUv = uv;
+  vec2 vUv1 = (vec2(vUv.x,y) - 0.5)/resolution.zw + vec2(0.5);
+  float depth = readDepth( depthInfo, vUv1 );
+  
+  vec3 pos = position;
+  pos.z +=(1. - depth)*0.6*progress;
+  pos.y += 0.01*snoise(vec3(vUv1*30.,time/100.));
+  vDepth = depth;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
 }

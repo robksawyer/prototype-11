@@ -126,7 +126,7 @@ const FaceContent = ({ depthBuffer, depthMaterial }) => {
     <scene ref={scene}>
       <group
         ref={faceGroup}
-        position={[0, -0.05, -0.275]}
+        position={[0, -0.05, -0.175]}
         // scale={[0.045, 0.045, 0.045]}
       >
         <FaceMesh material={new THREE.MeshNormalMaterial()} />
