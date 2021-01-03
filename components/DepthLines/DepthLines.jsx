@@ -77,13 +77,7 @@ const LineInstance = ({ position = [0, 0, 0] }) => {
 // eslint-disable-next-line react/display-name
 const InstancedPlane = React.forwardRef(
   ({ amount = 100, camera1, progress, target1, target2, ...props }, ref) => {
-    const mesh = useRef()
     // const dummy = new THREE.Object3D()
-
-    const coords = useMemo(
-      () => new Array(amount).fill().map((_, i) => [0, (i - 50) / 50, 0]),
-      [amount]
-    )
 
     const material = useUpdate(
       (material) => {
@@ -137,7 +131,7 @@ const InstancedPlane = React.forwardRef(
               <LineInstance
                 key={`iLine-${i}`}
                 target={target2}
-                position={coords[i]}
+                position={[0, (i - 50) / 50, 0]}
               />
             )
           })}

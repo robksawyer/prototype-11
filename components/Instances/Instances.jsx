@@ -1,5 +1,8 @@
 /**
  * @file Instances.js
+ *
+ * useImperativeHandle info
+ * @see https://stackoverflow.com/questions/57005663/when-to-use-useimperativehandle-uselayouteffect-and-usedebugvalue
  */
 import React, {
   useRef,
@@ -8,7 +11,6 @@ import React, {
   useEffect,
   useImperativeHandle,
 } from 'react'
-import PropTypes from 'prop-types'
 
 // import styles from './Instances.module.css'
 
