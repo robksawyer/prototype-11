@@ -35,7 +35,7 @@ const Face3d = (props) => {
     <Suspense fallback={null}>
       <group ref={face} position={[0, 0, 0.15]}>
         <FaceMesh
-          material={new THREE.MeshLambertMaterial({ color: 0x000000 })}
+          material={new THREE.MeshLambertMaterial({ color: 0xff0000 })}
         />
       </group>
     </Suspense>

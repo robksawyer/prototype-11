@@ -6,6 +6,8 @@ import * as THREE from 'three'
 import PropTypes from 'prop-types'
 import { useResource, useFrame, useUpdate } from 'react-three-fiber'
 
+import { Instances, Instance } from '../Instances'
+
 import { useFBO } from '../../hooks/useFBO'
 
 import styles from './DepthLines.module.css'
@@ -60,37 +62,49 @@ import './shaders/defaultShaderMaterial'
 //   )
 // }
 
+const LineInstance = ({ position = [0, 0, 0] }) => {
+  const instance = useUpdate((instance) => {
+    // console.log('instance', instance)
+  })
+  // useFrame(({clock}) => {
+  //   instance.current.rotation.x = Math.sin() * clock.getElapsedTime()
+  //   instance.current.update()
+  // })
+
+  return <Instance ref={instance} position={position} />
+}
+
 // eslint-disable-next-line react/display-name
-const InstancedPlane = forwardRef(
+const InstancedPlane = React.forwardRef(
   ({ amount = 100, camera1, progress, target1, target2, ...props }, ref) => {
-    // const mesh = useRef()
-    const dummy = new THREE.Object3D()
+    const mesh = useRef()
+    // const dummy = new THREE.Object3D()
 
     const coords = useMemo(
       () => new Array(amount).fill().map((_, i) => [0, (i - 50) / 50, 0]),
       [amount]
     )
 
-    const geomRef = useUpdate(
-      (geometry) => {
-        console.log('geometry', geometry)
+    const material = useUpdate(
+      (material) => {
+        console.log('material', material)
       },
       [] // execute only if these properties change
     )
 
-    const mesh = useUpdate((mesh) => {
-      console.log('mesh', mesh)
-    }, [])
+    // const mesh = useUpdate((mesh) => {
+    //   console.log('mesh', mesh)
+    // }, [])
 
     useFrame(({ clock }) => {
-      // const t = clock.getElapsedTime()
+      const t = clock.getElapsedTime()
       // coords.forEach(([x, y, z], i) => {
       //   dummy.updateMatrix(void dummy.position.set(x + t, y + t, z + t))
       //   mesh.current.setMatrixAt(i, dummy.matrix)
       // })
-      // mesh.current.material.uniforms.time.value = t
-      mesh.current.material.uniforms.depthInfo.value = target2.depthTexture
-      mesh.current.material.needsUpdate = true
+      material.current.uniforms.time.value = t
+      material.current.uniforms.depthInfo.value = target2.depthTexture
+      material.current.needsUpdate = true
       // mesh.current.instanceMatrix.needsUpdate = true
     })
 
@@ -106,14 +120,11 @@ const InstancedPlane = forwardRef(
 
     return (
       <group ref={ref} {...props}>
-        <instancedMesh ref={mesh} args={[null, null, amount]} renderOrder={2}>
-          <planeBufferGeometry
-            ref={geomRef}
-            attach="geometry"
-            args={[2, 0.005, 300, 1]}
-          />
+        <Instances>
+          <planeBufferGeometry attach="geometry" args={[2, 0.005, 300, 1]} />
           <defaultShaderMaterial
             attach="material"
+            ref={material}
             side={THREE.DoubleSide}
             cameraNear={camera1.near}
             cameraFar={camera1.far}
@@ -121,7 +132,16 @@ const InstancedPlane = forwardRef(
             depthInfo={target2.depthTexture}
             depthWrite={true}
           />
-        </instancedMesh>
+          {[...Array(amount).keys()].map((_, i) => {
+            return (
+              <LineInstance
+                key={`iLine-${i}`}
+                target={target2}
+                position={coords[i]}
+              />
+            )
+          })}
+        </Instances>
       </group>
     )
   }
