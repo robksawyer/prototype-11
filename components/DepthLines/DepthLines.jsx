@@ -97,7 +97,7 @@ const InstancedPlane = React.forwardRef(
       //   mesh.current.setMatrixAt(i, dummy.matrix)
       // })
       material.current.uniforms.time.value = t
-      material.current.uniforms.depthInfo.value = target2.depthTexture
+      material.current.uniforms.depthInfo.value = target1.depthTexture
       material.current.needsUpdate = true
       // mesh.current.instanceMatrix.needsUpdate = true
     })
@@ -114,7 +114,27 @@ const InstancedPlane = React.forwardRef(
 
     return (
       <group ref={ref} {...props}>
-        <Instances>
+        {[...Array(amount).keys()].map((_, i) => {
+          return (
+            <mesh key={`iLine-${i}`} position={[0, (i - 50) / 50, 0]}>
+              <planeBufferGeometry
+                attach="geometry"
+                args={[2, 0.005, 300, 1]}
+              />
+              <defaultShaderMaterial
+                attach="material"
+                ref={material}
+                side={THREE.DoubleSide}
+                cameraNear={camera1.near}
+                cameraFar={camera1.far}
+                progress={progress}
+                depthInfo={target1.depthTexture}
+                depthWrite={true}
+              />
+            </mesh>
+          )
+        })}
+        {/* <Instances>
           <planeBufferGeometry attach="geometry" args={[2, 0.005, 300, 1]} />
           <defaultShaderMaterial
             attach="material"
@@ -123,19 +143,19 @@ const InstancedPlane = React.forwardRef(
             cameraNear={camera1.near}
             cameraFar={camera1.far}
             progress={progress}
-            depthInfo={target2.depthTexture}
+            depthInfo={target1.depthTexture}
             depthWrite={true}
           />
           {[...Array(amount).keys()].map((_, i) => {
             return (
               <LineInstance
                 key={`iLine-${i}`}
-                target={target2}
+                target={target1}
                 position={[0, (i - 50) / 50, 0]}
               />
             )
           })}
-        </Instances>
+        </Instances> */}
       </group>
     )
   }
