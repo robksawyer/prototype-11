@@ -6,7 +6,7 @@ import * as THREE from 'three'
 import PropTypes from 'prop-types'
 import { useResource, useFrame, useUpdate } from 'react-three-fiber'
 
-import { Instances, Instance } from '../Instances'
+// import { Instances, Instance } from '../Instances'
 
 import { useFBO } from '../../hooks/useFBO'
 
@@ -75,8 +75,9 @@ const InstancedPlane = React.forwardRef(
   ({ i, camera1, progress, target1, target2, ...props }, ref) => {
     // const dummy = new THREE.Object3D()
 
-    const pBuffG = useUpdate(
+    const geometry = useUpdate(
       (geometry) => {
+        console.log('geometry', geometry)
         const { i } = geometry.userData
         let y = []
         let len = geometry.attributes.position.array.length
@@ -95,7 +96,7 @@ const InstancedPlane = React.forwardRef(
 
     const material = useUpdate(
       (material) => {
-        console.log('material', material)
+        // console.log('material', material)
       },
       [] // execute only if these properties change
     )
@@ -110,7 +111,7 @@ const InstancedPlane = React.forwardRef(
     return (
       <mesh position={[0, (i - 50) / 50, 0]}>
         <planeBufferGeometry
-          ref={pBuffG}
+          ref={geometry}
           attach="geometry"
           args={[2, 0.005, 300, 1]}
           userData={{ i }}
