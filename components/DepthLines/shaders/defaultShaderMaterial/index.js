@@ -48,7 +48,7 @@ const DefaultShaderMaterial = shaderMaterial(
     texture1: null,
     depthInfo: null,
     cameraNear: 1.0,
-    cameraFar: 2000.0,
+    cameraFar: 200.0,
     progress: 0.0,
     // vDepth: 0.0,
     mouse: new THREE.Vector2(),
