@@ -46,12 +46,14 @@ const InstancedPlane = React.forwardRef(
     )
 
     useFrame(({ gl, scene, clock }) => {
+      // gl.autoClear = false
       // render post FX
       material.current.uniforms.depthInfo.value = target1.depthTexture
       material.current.uniforms.cameraNear.value = camera1.near
       material.current.uniforms.cameraFar.value = camera1.far
       material.current.uniforms.time.value = clock.getElapsedTime()
       material.current.needsUpdate = true
+      // gl.autoClear = true
     })
 
     return (
@@ -90,7 +92,7 @@ const DepthLines = (props) => {
 
   const amount = 100
 
-  const mesh = createRef()
+  // const mesh = createRef()
   // Note: Without depth material added to scene as an override the performance
   // suffers tremendously. Why is that?
   // const depthMaterial = new THREE.MeshDepthMaterial({
@@ -104,13 +106,13 @@ const DepthLines = (props) => {
 
   let target1 = useFBO({
     settings: {
-      // stencilBuffer: false,
+      stencilBuffer: false,
       depthBuffer: true,
       depthTexture: new THREE.DepthTexture(),
     },
   })
 
-  target1.texture.format = THREE.RGBFormat
+  // target1.texture.format = THREE.RGBFormat
   target1.texture.minFilter = THREE.NearestFilter
   target1.texture.magFilter = THREE.NearestFilter
   target1.texture.generateMipmaps = false
@@ -126,9 +128,9 @@ const DepthLines = (props) => {
     },
   })
 
-  target2.texture.format = THREE.RGBFormat
-  // target2.texture.minFilter = THREE.NearestFilter
-  // target2.texture.magFilter = THREE.NearestFilter
+  // target2.texture.format = THREE.RGBFormat
+  target2.texture.minFilter = THREE.NearestFilter
+  target2.texture.magFilter = THREE.NearestFilter
   target2.texture.generateMipmaps = false
 
   target2.depthTexture.type = type

@@ -20,7 +20,7 @@ const TwoCameras = (props) => {
 
   const { progress } = useTweaks('Camera Positions', {
     progress: {
-      value: 2.4,
+      value: 0.54,
       min: -10.0,
       max: 10.0,
     },
@@ -42,7 +42,8 @@ const TwoCameras = (props) => {
         ref={camera1}
         position-x={0}
         position-y={0}
-        position-z={1}
+        position-z={2}
+        rotation-y={90}
         args={[70, window.innerWidth / window.innerHeight, 0.01, 5]}
       />
       <PerspectiveCamera
@@ -50,7 +51,7 @@ const TwoCameras = (props) => {
         position-x={0}
         position-y={0}
         position-z={0}
-        args={[70, window.innerWidth / window.innerHeight, 0.01, 3]}
+        args={[70, window.innerWidth / window.innerHeight, 0.001, 300]}
       />
 
       {camera1.current && camera2.current && (

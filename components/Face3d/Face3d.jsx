@@ -9,32 +9,21 @@ import PropTypes from 'prop-types'
 import styles from './Face3d.module.css'
 
 import FaceMesh from './FaceMesh'
+import Facefull from './Facefull'
 
 const Face3d = (props) => {
   const { tagName: Tag, className, variant, children } = props
 
-  const face = useResource()
-
-  useFrame(({ clock }) => {
-    face.current.position.z = THREE.MathUtils.lerp(
-      face.current.position.z,
-      face.current.position.z + Math.sin(clock.getElapsedTime()) * 0.15,
-      0.01
-    )
-    face.current.rotation.y = THREE.MathUtils.lerp(
-      face.current.rotation.y,
-      face.current.rotation.y + Math.sin(clock.getElapsedTime()) * 0.25,
-      0.01
-    )
-  })
-
   return (
     <Suspense fallback={null}>
-      <group ref={face} position={[0, 0, -0.35]} scale={[0.75, 0.75, 0.75]}>
-        <FaceMesh
+      <FaceMesh
+        position={[0, 0, -0.35]}
+        scale={[0.75, 0.75, 0.75]}
+        material={new THREE.MeshLambertMaterial({ color: 0xff0ff00 })}
+      />
+      {/* <Facefull
           material={new THREE.MeshLambertMaterial({ color: 0xff0ff00 })}
-        />
-      </group>
+        /> */}
     </Suspense>
   )
 }

@@ -25,7 +25,7 @@ void main()	{
 
 	float tomix = smoothstep(0.2, 1., vDepth);
 
-	gl_FragColor.rgb = mix(vec3(0.495, 0.165, 0.234),2.*vec3(0.000, 0.001, 0.242),tomix);
+	gl_FragColor.rgb = mix(vec3(0.495, 0.165, 0.234), 2. * vec3(0.000, 0.001, 0.242), tomix);
 	// gl_FragColor.rgb = mix(vec3(0.495, 0.165, 0.234),vec3(1.),tomix);
 
 	

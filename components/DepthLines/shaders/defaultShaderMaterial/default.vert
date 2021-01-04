@@ -73,6 +73,7 @@ float snoise(vec3 v){
   return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), 
                                 dot(p2,x2), dot(p3,x3) ) );
 }
+
 uniform float time;
 uniform float progress;
 varying vec2 vUv;
@@ -95,14 +96,16 @@ float readDepth( sampler2D depthSampler, vec2 coord ) {
 	float viewZ = perspectiveDepthToViewZ( fragCoordZ, cameraNear, cameraFar );
 	return viewZToOrthographicDepth( viewZ, cameraNear, cameraFar );
 }
+
 void main() {
   vUv = uv;
   vec2 vUv1 = (vec2(vUv.x,y) - 0.5)/resolution.zw + vec2(0.5);
   float depth = readDepth( depthInfo, vUv1 );
   
   vec3 pos = position;
-  pos.z +=(1. - depth)*0.6*progress;
-  pos.y += 0.01*snoise(vec3(vUv1*30.,time/100.));
+  pos.z += (1. - depth) * 0.6 * progress;
+  pos.y += 0.01 * snoise(vec3(vUv1 * 30., time / 100.));
+
   vDepth = depth;
   gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
 }
