@@ -1,0 +1,31 @@
+/**
+* @file fonts.css
+*/
+
+/* Examples */
+
+/* @import 'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700;900&display=swap'; */
+@font-face {
+  font-family: "NeueMontreal-Regular";
+  src: url("/fonts/NeueMontreal-Regular.woff2") format("woff2"),
+    url("/fonts/NeueMontreal-Regular.woff") format("woff");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PPSupplyMono";
+  src: url("/fonts/PPSupplyMono-Light.woff2") format("woff2"),
+    url("/fonts/PPSupplyMono-Light.woff") format("woff");
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PPSupplyMono";
+  src: url("/fonts/PPSupplyMono-Regular.woff2") format("woff2"),
+    url("/fonts/PPSupplyMono-Regular.woff") format("woff");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}

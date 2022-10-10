@@ -1,328 +1,184 @@
 /**
- * tailwind.config.js
- *
- * Plugins
- * - TailwindCSS Transitions / https://github.com/benface/tailwindcss-transitions
+ * @file tailwind.config.js
+ * Theme colors: https://coolors.co/011627-fdfffc-2ec4b6-e71d36-ff9f1c
  */
-const { colors } = require('tailwindcss/defaultTheme')
-// const fontBaseSize = 14
-
-/**
- * convertPxToEms
- * Handles converting the px to ems
- * @param {int} val is the value to be calculated
- * @param {int} baseSize is base size to base the calculations from
- */
-// const convertPxToEms = (val, baseSize = 14) => `${val / baseSize}em`
-
-/**
- * @param {int} totalSizes is the total number of fonts to generate
- * @param {int} fontBaseSize is font base size to start the calculations from
- * @param {int} startingValue is the starting value (or the font sizes to skip)
- *                            ex. Not typically important to have a font size of 1px
- */
-// function getFontSizes(totalSizes = 250, fontBaseSize = 14, startingValue = 8) {
-//   // The following generates an array of increasing values from the totalSizes above.
-//   const fontSizeArray = Array.from(Array(totalSizes + 1).keys())
-//   const fontSizeArraySliced = fontSizeArray.slice(
-//     startingValue,
-//     fontSizeArray.length
-//   )
-
-//   // Traverse the array and generate font sizes in ems based on the base pixel value.
-//   return fontSizeArraySliced.map((i, x) => convertPxToEms(i, fontBaseSize))
-// }
-
-// const fontSizes = getFontSizes(250, fontBaseSize, 8)
+const { colors, fontSize, screens } = require('tailwindcss/defaultTheme');
 
 module.exports = {
+  mode: 'jit',
+  // corePlugins: {
+  //   preflight: false,
+  // },
+
+  // If you want to support toggling dark mode manually instead of relying on the operating
+  // system preference, use the class strategy instead of the media strategy
+  darkMode: 'class',
+  content: ['./src/**/*.{html,js,jsx}'],
   theme: {
     screens: {
-      sm: '640px',
+      xs: '480px',
       md: '768px',
       lg: '1024px',
-      xl: '1440px',
-      xxl: '1800px',
-    },
-    scale: {
-      0: '0',
-      10: '.10',
-      20: '.20',
-      25: '.25',
-      50: '.5',
-      75: '.75',
-      90: '.9',
-      95: '.95',
-      100: '1',
-      105: '1.05',
-      110: '1.1',
-      125: '1.25',
-      150: '1.5',
-      200: '2',
-    },
-    minHeight: {
-      0: '0',
-      '1/4': '25%',
-      '1/2': '50%',
-      '3/4': '75%',
-      20: '20px',
-      40: '40px',
-      60: '60px',
-      80: '80px',
-      100: '100px',
-      125: '125px',
-      150: '150px',
-      175: '175px',
-      full: '100%',
-      screen: '100vh',
-    },
-    textIndent: {
-      1: '0.25rem',
-      2: '0.5rem',
-    },
-    transitionProperty: {
-      // defaults to these values
-      none: 'none',
-      all: 'all',
-      color: 'color',
-      bg: 'background-color',
-      border: 'border-color',
-      colors: ['color', 'background-color', 'border-color'],
-      opacity: 'opacity',
-      transform: 'transform',
-    },
-    transitionDuration: {
-      // defaults to these values
-      default: '250ms',
-      0: '0ms',
-      100: '100ms',
-      250: '250ms',
-      500: '500ms',
-      750: '750ms',
-      1000: '1000ms',
-    },
-    transitionTimingFunction: {
-      // defaults to these values
-      default: 'ease',
-      linear: 'linear',
-      ease: 'ease',
-      'ease-in': 'ease-in',
-      'ease-out': 'ease-out',
-      'ease-in-out': 'ease-in-out',
-    },
-    transitionDelay: {
-      // defaults to these values
-      default: '0ms',
-      0: '0ms',
-      100: '100ms',
-      250: '250ms',
-      500: '500ms',
-      750: '750ms',
-      1000: '1000ms',
-    },
-    willChange: {
-      // defaults to these values
-      auto: 'auto',
-      scroll: 'scroll-position',
-      contents: 'contents',
-      opacity: 'opacity',
-      transform: 'transform',
+      mlg: '1280px',
+      xl: '1600px',
+      xxl: '1920px',
     },
     extend: {
+      transitionDelay: {
+        2000: '2000ms',
+        2500: '2500ms',
+        3000: '3000ms',
+      },
       colors: {
-        primary: 'var(--color-primary)',
-        secondary: 'var(--color-secondary)',
-        // https://coolors.co/011627-fdfffc-2ec4b6-e71d36-ff9f1c
-        accent0: '#011627',
-        accent1: '#FDFFFC',
-        accent2: '#2EC4B6',
-        accent3: '#E71D36',
-        accent4: '#FF9F1C',
-        transparent: 'transparent',
-        black: '#000',
-        white: '#fff',
+        primary: '#000000',
+        secondary: '#ffffff',
+        accent0: '#f7f7f7',
+        accent1: '#F8F9FA',
+        accent2: '#333339',
+        accent3: '#9F4BC9',
+        accent4: '#D5B942',
+        accent5: '#60CF88',
+        accent6: '#9F51F6',
+        accent7: '#4F4598',
+        black: '#000000',
+        white: '#ffffff',
         gray: {
-          f3: '#f3f3f3',
-          f4: '#f4f4f4',
-          f6: '#f6f6f6',
-          fb: '#FBFBFB',
-          c4: '#C4C4C4',
-          cd: '#CDCDCD',
-          e4: '#E4E4E4',
-          e5: '#E5E5E5',
-          94: '#949494',
-        },
-        blue: {
-          ...colors.blue,
-          '00': '#003DD0',
-          17: '#178EFF',
-        },
-        purple: {
-          ...colors.purple,
-          77: '#777dff',
-          86: '#860DFF',
-        },
-        orange: {
-          ...colors.orange,
-          ff: '#FFCAC1',
-          fc: '#FCB3A7',
-        },
-        red: {
-          ...colors.red,
-          fe: '#FE0000',
+          ...colors.gray,
+          30: '#303738',
+          33: '#333333',
+          ea: '#EAEAEA',
+          d9: '#D9DEE3',
+          f5: '#F5F5F5',
+          e3: '#E3E6EC',
+          eb: '#EBEBEB',
+          ed: '#EDEEF0',
         },
         pink: {
           ...colors.pink,
-          ff: '#FF9EE3',
-          f0: '#f0357c',
+          ac: '#AC46D2',
+          90: '#903db1',
+          95: '#953cd5',
+          f7: '#F70A91',
+          ff: '#FF0092',
+          '9f': '#9F4BC9',
+          fa: '#FA1FB6',
+        },
+        purple: {
+          ...colors.purple,
+          'brand-light': '#c026f6',
+          'brand-dark': '#5e1ec5',
+          '00': '#001440',
+          61: '#6134D7',
+          b7: '#B765D7',
+          77: '#7773E1',
+        },
+        orange: {
+          ...colors.orange,
+          ff: '#FF8300',
+          ec: '#ec7a00',
+        },
+        yellow: {
+          ff: '#FFB600',
+        },
+        green: {
+          '0e': '#0ef1b3',
+          '2f': '#2FFFE7',
+          '3f': '#34FFE7',
+          34: '#34FFE7',
+        },
+        red: {
+          ...colors.red,
+          f5: '#F52513',
+          c8: '#C80000',
+          ff: '#FF0003',
+        },
+        blue: {
+          ...colors.blue,
+          '07': '#07080a',
+          'brand-light': '#cbd1db',
+          'brand-dark': '#121521',
+          '0A': '#0A0B0D',
+          '02': '#02003E',
+          '04': '#04347A',
+          '2d': '#2D4DC8',
         },
       },
-      fontFamily: {
-        sans: ['poppins', 'Helvetica', 'Arial', 'sans-serif'],
-        menlo: [
-          'Menlo',
-          'Monaco',
-          'Lucida Console',
-          'Liberation Mono',
-          'DejaVu Sans Mono',
-          'Bitstream Vera Sans Mono',
-          'Courier New',
-          'monospace',
-        ],
+      borderRadius: {
+        ms: '0.25rem',
       },
-      borderWidth: {
-        default: '1px',
-        0: '0',
-        2: '2px',
-        3: '3px',
-        4: '4px',
-        6: '6px',
-        8: '8px',
-      },
-      letterSpacing: {
-        tightest: '-.075em',
-        tighter: '-.05em',
-        tight: '-.025em',
-        normal: '0',
-        wide: '.025em',
-        wider: '.05em',
-        widest: '.25em',
+      dropShadow: {
+        discord: '0px 4px 12px #5865F2',
+        discordHover: '0px 2px 8px #5865F2',
+        purple: '0px 4px 12px #5865F2',
+        purpleHover: '0px 2px 8px #5865F2',
+        hotPink: '0px 4px 12px #C8287A',
+        hotPinkHover: '0px 2px 8px #C8287A',
+        teal: '0px 4px 12px #2CFEFE',
+        tealHover: '0px 2px 8px #2CFEFE',
+        red: '0px 0px 3px red',
       },
       height: {
-        screen: '100vh',
-        full: '100%',
-        0: '0',
-        5: '5px',
-        10: '10px',
-        15: '15px',
-        20: '20px',
-        22: '22px',
-        24: '24px',
-        25: '25px',
-        30: '30px',
-        35: '35px',
-        38: '38px',
-        40: '40px',
-        45: '45px',
-        46: '46px',
-        48: '48px',
-        49: '49px',
-        50: '50px',
-        52: '52px',
-        55: '55px',
-        60: '60px',
-        70: '70px',
-        72: '72px',
-        74: '74px',
-        80: '80px',
-        82: '82px',
-        84: '84px',
-        90: '90px',
-        92: '92px',
-        100: '100px',
-        110: '110px',
-        120: '120px',
-        130: '130px',
-        140: '140px',
-        150: '150px',
-        160: '160px',
-        170: '170px',
-        180: '180px',
-        190: '190px',
-        200: '200px',
-        210: '210px',
-        220: '220px',
-        230: '230px',
-        240: '240px',
-        250: '250px',
+        'screen-1/2': '50vh',
+        'screen-1/3': '33vh',
       },
-      spacing: {
-        0: '0',
-        5: '5px',
-        10: '10px',
-        15: '15px',
-        16: '16px',
-        17: '17px',
-        18: '18px',
-        19: '19px',
-        20: '20px',
-        22: '22px',
-        24: '24px',
-        25: '25px',
-        26: '26px',
-        27: '27px',
-        28: '28px',
-        29: '29px',
-        30: '30px',
-        35: '35px',
-        38: '38px',
-        40: '40px',
-        45: '45px',
-        46: '46px',
-        48: '48px',
-        49: '49px',
-        50: '50px',
-        52: '52px',
-        55: '55px',
-        60: '60px',
-        70: '70px',
-        72: '72px',
-        74: '74px',
-        80: '80px',
-        82: '82px',
-        84: '84px',
-        90: '90px',
-        92: '92px',
-        100: '100px',
-        110: '110px',
-        120: '120px',
-        130: '130px',
-        140: '140px',
-        150: '150px',
-        160: '160px',
-        170: '170px',
-        180: '180px',
-        190: '190px',
-        200: '200px',
-        210: '210px',
-        220: '220px',
-        230: '230px',
-        240: '240px',
-        250: '250px',
+      width: {
+        profile: '1200px',
+        'screen-1/2': '50vw',
+        'screen-1/3': '33vw',
       },
-      //   fontSize: {
-      //     base: `${fontBaseSize}px`,
-      //     ...fontSizes,
-      //     '244': '17.423em',
-      //   },
+      zIndex: {
+        '-1': '-10',
+        100: 100,
+        50: 50,
+        60: 60,
+        70: 70,
+        80: 80,
+        90: 90,
+        content: 10,
+        hud: 20,
+        modal: 40,
+        nav: 45,
+        loader: 50,
+        cursor: 60,
+        infinity: 9999999999,
+      },
+      fontSize: {
+        xxs: '.625rem',
+        '2xs': '0.65rem',
+        '3xs': '0.6rem',
+        '4xs': '0.5rem',
+      },
+      gap: {
+        6: '-1.5rem',
+      },
+      fontFamily: {
+        sans: ['NeueMontreal-Regular', 'Helvetica', 'Arial', 'sans-serif'],
+        pp: ['PPSupplyMono', 'Helvetica', 'Arial', 'sans-serif'],
+      },
+      transitionTimingFunction: {
+        custom: 'cubic-bezier(.45,.09,.35,.91)',
+        'in-expo': 'cubic-bezier(0.95, 0.05, 0.795, 0.035)',
+        'out-expo': 'cubic-bezier(0.19, 1, 0.22, 1)',
+      },
+      backgroundImage: {
+        gradient0:
+          'linear-gradient(#5CFF94 0px, #5CFF94 52%, #28c961 53%, #28c961)',
+        gradient0Hover:
+          'linear-gradient(#28c961 0px, #28c961 52%, #28c961 53%, #28c961)',
+      },
     },
   },
   variants: {
-    backgroundColor: ['responsive', 'hover', 'focus', 'active', 'group-hover'],
-    fontStyle: ['responsive', 'focus', 'hover', 'active'],
-    textColor: ['responsive', 'focus', 'hover', 'active'],
-    borderColor: ['responsive', 'focus', 'hover', 'active'],
-    willChange: ['responsive'],
+    extend: {
+      fontFamily: [
+        'active',
+        'responsive',
+        'focus',
+        'focus-within',
+        'dark',
+        'hover',
+      ],
+    },
   },
-  plugins: [],
-}
+  plugins: [require('tailwindcss-touch')()],
+};
